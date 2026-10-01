@@ -1,0 +1,6 @@
+{
+  "name": "Finance With Dev Community",
+  "description": "Join Finance With Dev Community for ₹199/month. Access premium IPO research, 80 NISM Series XV practice MCQs, market discussions, curated finance resources, and a focused learning network.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
