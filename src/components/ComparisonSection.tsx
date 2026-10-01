@@ -19,7 +19,7 @@ export const ComparisonSection: React.FC<ComparisonSectionProps> = ({
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold tracking-wider text-emerald-400">
-            05. FREE VS COMMUNITY
+            FREE VS COMMUNITY
           </p>
           <h2
             className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-4xl"
@@ -86,21 +86,36 @@ export const ComparisonSection: React.FC<ComparisonSectionProps> = ({
               <div className="my-5 border-t border-white/[0.1]" />
 
               <ul className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-                {communityTier.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-start gap-3 text-sm font-medium text-white"
-                  >
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
+                {communityTier.features.map((feature) => {
+                  const isHighlighted =
+                    feature === communityTier.highlightedFeature;
+                  return (
+                    <li
+                      key={feature}
+                      className={`flex items-start gap-3 text-sm ${
+                        isHighlighted
+                          ? 'sm:col-span-2 rounded-xl border border-emerald-500/35 bg-emerald-500/10 p-3 font-bold text-emerald-300'
+                          : 'font-medium text-white'
+                      }`}
+                    >
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                      <div className="flex flex-1 flex-wrap items-center justify-between gap-2">
+                        <span>{feature}</span>
+                        {isHighlighted && (
+                          <span className="font-mono-tabular text-[11px] font-bold tracking-wider text-emerald-400">
+                            EVERY MARKET DAY
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
             <div className="mt-8 flex flex-col gap-3 border-t border-white/[0.1] pt-6 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-xs text-slate-300">
-                Full community, tools & resource access
+                Full community, daily briefs, tools & resource access
               </span>
               <a
                 href={SITE_CONFIG.links.PAYMENT_URL}

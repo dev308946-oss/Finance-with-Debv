@@ -12,9 +12,9 @@ export const BenefitsSection: React.FC<BenefitsSectionProps> = ({
   const {
     heading,
     subheading,
+    dailyBriefSpotlight,
+    orderedBenefits,
     ipoCard,
-    nismCard,
-    additionalOverviewCards,
   } = SITE_CONFIG.whatIsInside;
 
   const [expandedNismId, setExpandedNismId] = useState<string>('nism-xv');
@@ -32,7 +32,7 @@ export const BenefitsSection: React.FC<BenefitsSectionProps> = ({
         {/* Section Heading */}
         <div className="max-w-2xl">
           <p className="text-xs font-semibold tracking-wider text-emerald-400">
-            01. WHAT IS INSIDE?
+            WHAT&apos;S INSIDE THE COMMUNITY?
           </p>
           <h2
             className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-4xl"
@@ -45,65 +45,146 @@ export const BenefitsSection: React.FC<BenefitsSectionProps> = ({
           </p>
         </div>
 
-        {/* 6 Cards Grid: Top 2 Flagship Cards (6 cols each) + 4 Core Pillars (3 cols each on xl, 6 on sm) */}
-        <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* CARD 1: IPO RESEARCH */}
-          <article className="flex flex-col justify-between rounded-2xl border border-emerald-500/25 bg-[#0D131C] p-6 sm:p-7 lg:col-span-6">
+        {/* MAJOR BENEFIT SPOTLIGHT: 01 — DAILY MARKET BRIEF */}
+        <article
+          id="daily-market-brief"
+          className="mt-10 rounded-2xl border-2 border-emerald-500/45 bg-[#0C141E] p-6 sm:p-8"
+        >
+          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
+            <div className="lg:col-span-6">
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <span className="font-mono-tabular font-bold tracking-wider text-emerald-400">
+                  01 — DAILY MARKET BRIEF
+                </span>
+                <span aria-hidden="true" className="text-slate-600">
+                  ·
+                </span>
+                <span className="font-mono-tabular font-bold tracking-wider text-emerald-300">
+                  {dailyBriefSpotlight.badge}
+                </span>
+              </div>
+
+              <h3 className="mt-3 font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                {dailyBriefSpotlight.title}
+              </h3>
+
+              <p className="mt-2 font-display text-base font-semibold text-emerald-400 sm:text-lg">
+                {dailyBriefSpotlight.subtitle}
+              </p>
+
+              <p className="mt-2.5 text-sm leading-relaxed text-slate-200 sm:text-base">
+                {dailyBriefSpotlight.description}
+              </p>
+
+              <p className="mt-3 text-xs leading-relaxed text-slate-400">
+                {dailyBriefSpotlight.orderedSummary}
+              </p>
+            </div>
+
+            <div className="border-t border-white/[0.08] pt-6 lg:col-span-6 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
+              <p className="text-xs font-semibold tracking-wider text-slate-400">
+                WHAT EACH BRIEF COVERS
+              </p>
+              <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {dailyBriefSpotlight.bullets.map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-start gap-2.5 text-sm font-medium text-white"
+                  >
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        {/* THE 6 ORDERED COMMUNITY BENEFITS (01 TO 06) */}
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {orderedBenefits.map((benefit, idx) => (
+            <article
+              key={benefit.index}
+              className={`flex flex-col justify-between rounded-2xl border p-6 transition-colors duration-150 ${
+                idx === 0
+                  ? 'border-emerald-500/35 bg-[#0D1520]'
+                  : 'border-white/[0.08] bg-[#0B0F16] hover:border-white/[0.16]'
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-mono-tabular font-bold tracking-wider text-emerald-400">
+                    {benefit.index}
+                  </span>
+                  <span className="font-mono-tabular text-[11px] font-semibold tracking-wider text-slate-400">
+                    {benefit.badge}
+                  </span>
+                </div>
+
+                <h3 className="mt-3 font-display text-lg font-bold tracking-tight text-white sm:text-xl">
+                  {benefit.title}
+                </h3>
+
+                <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                  {benefit.description}
+                </p>
+              </div>
+
+              <div className="mt-5 border-t border-white/[0.06] pt-3">
+                <a
+                  href={benefit.anchor}
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:text-emerald-300 underline underline-offset-4"
+                >
+                  <span>Explore {benefit.title}</span>
+                  <span>↓</span>
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {/* INTERACTIVE DEEP-DIVE CARDS FOR 02 (IPO RESEARCH) & 05 (CERTIFICATION & PRACTICE TOOLS) */}
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+          {/* 02 — IPO RESEARCH & DISCUSSION ACTION CARD */}
+          <article className="flex flex-col justify-between rounded-2xl border border-white/[0.09] bg-[#0B1018] p-6 sm:p-7 lg:col-span-6">
             <div>
               <div className="flex items-center justify-between text-xs">
                 <span className="font-mono-tabular font-semibold tracking-wider text-emerald-400">
-                  01 · {ipoCard.category}
+                  02 — {ipoCard.category}
                 </span>
                 <span className="text-slate-400">Basic Free vs. Member Premium</span>
               </div>
 
-              <h3 className="mt-3 font-display text-xl font-bold tracking-tight text-white sm:text-2xl">
+              <h3 className="mt-2.5 font-display text-xl font-bold tracking-tight text-white">
                 {ipoCard.title}
               </h3>
 
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                {ipoCard.description}
+              <p className="mt-1.5 text-sm leading-relaxed text-slate-300">
+                {ipoCard.summary}
               </p>
 
-              {/* Clear Distinction Between Basic and Premium */}
-              <div className="mt-5 space-y-3 border-t border-b border-white/[0.08] py-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold tracking-wide text-slate-200">
-                      BASIC VERSION · FREE
-                    </p>
-                    <p className="mt-0.5 text-xs leading-relaxed text-slate-400">
-                      {ipoCard.freeNote}
-                    </p>
-                  </div>
-                  <span className="font-mono-tabular text-xs text-slate-400 shrink-0">
-                    Public
-                  </span>
+              <div className="mt-4 space-y-2.5 border-t border-b border-white/[0.08] py-3.5 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-300">Basic IPO Check</span>
+                  <span className="font-mono-tabular text-slate-400">Free for Everyone</span>
                 </div>
-
-                <div className="border-t border-white/[0.06] pt-3 flex items-start justify-between gap-3">
-                  <div className="border-l-2 border-emerald-500 pl-3">
-                    <p className="text-xs font-bold tracking-wide text-emerald-400">
-                      PREMIUM VERSION · COMMUNITY
-                    </p>
-                    <p className="mt-0.5 text-xs leading-relaxed text-slate-200">
-                      {ipoCard.premiumNote}
-                    </p>
-                  </div>
-                  <span className="font-mono-tabular text-xs font-semibold text-emerald-400 shrink-0">
-                    Included
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-white">
+                    Detailed IPO Analysis & Discussions
+                  </span>
+                  <span className="font-mono-tabular font-semibold text-emerald-400">
+                    Community Members
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Two Required Buttons */}
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
               <a
                 href={ipoCard.freeButtonUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[46px] flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/[0.14] bg-white/[0.03] px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-white/[0.08] whitespace-nowrap"
+                className="inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/[0.14] bg-white/[0.03] px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-white/[0.08] whitespace-nowrap"
               >
                 <span>{ipoCard.freeButtonText}</span>
                 <ExternalLink className="h-3.5 w-3.5 shrink-0" />
@@ -112,7 +193,7 @@ export const BenefitsSection: React.FC<BenefitsSectionProps> = ({
               <a
                 href={ipoCard.premiumButtonUrl}
                 onClick={(e) => onPremiumIpoClick(e, 'what_is_inside_ipo_card')}
-                className="inline-flex min-h-[46px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-bold text-slate-950 transition-colors hover:bg-emerald-400 whitespace-nowrap"
+                className="inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-bold text-slate-950 transition-colors hover:bg-emerald-400 whitespace-nowrap"
               >
                 <span>{ipoCard.premiumButtonText}</span>
                 <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
@@ -120,56 +201,45 @@ export const BenefitsSection: React.FC<BenefitsSectionProps> = ({
             </div>
           </article>
 
-          {/* CARD 2: NISM PRACTICE & CERTIFICATION PREP (Expandable Multi-Certification List) */}
-          <article className="flex flex-col justify-between rounded-2xl border border-white/[0.1] bg-[#0B0F16] p-6 sm:p-7 lg:col-span-6">
+          {/* 05 — CERTIFICATION & PRACTICE TOOLS EXPANDABLE PREVIEW */}
+          <article className="flex flex-col justify-between rounded-2xl border border-white/[0.09] bg-[#0B1018] p-6 sm:p-7 lg:col-span-6">
             <div>
               <div className="flex items-center justify-between text-xs">
                 <span className="font-mono-tabular font-semibold tracking-wider text-emerald-400">
-                  02 · {nismCard.category}
+                  05 — CERTIFICATION & PRACTICE TOOLS
                 </span>
-                <span className="text-slate-400">Multi-Exam Architecture</span>
+                <span className="text-slate-400">Expandable Suite</span>
               </div>
 
-              <h3 className="mt-3 font-display text-xl font-bold tracking-tight text-white sm:text-2xl">
-                {nismCard.title}
+              <h3 className="mt-2.5 font-display text-xl font-bold tracking-tight text-white">
+                NISM & Finance Practice Modules
               </h3>
 
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                {nismCard.description}
-              </p>
-
-              {/* Expandable List of Available / Planned NISM Tools */}
-              <div className="mt-5 divide-y divide-white/[0.08] border-t border-b border-white/[0.08]">
+              <div className="mt-4 divide-y divide-white/[0.08] border-t border-b border-white/[0.08]">
                 {SITE_CONFIG.nismCertifications.map((cert) => {
                   const isExpanded = expandedNismId === cert.id;
                   const isAvailable = cert.status === 'AVAILABLE';
 
                   return (
-                    <div key={cert.id} className="py-3">
+                    <div key={cert.id} className="py-2.5">
                       <button
                         type="button"
                         onClick={() => toggleNismItem(cert.id)}
                         aria-expanded={isExpanded}
-                        className="flex min-h-[40px] w-full items-center justify-between gap-3 text-left"
+                        className="flex min-h-[38px] w-full items-center justify-between gap-3 text-left"
                       >
-                        <div className="min-w-0">
-                          <p className="font-display text-sm font-bold text-white sm:text-base">
-                            {cert.title}
-                          </p>
-                          <p className="mt-0.5 font-mono-tabular text-[11px] text-slate-400">
-                            {isAvailable
-                              ? `Free: ${cert.freeTierLabel} · Community: ${cert.communityTierLabel}`
-                              : `${cert.status} · ${cert.badge}`}
-                          </p>
-                        </div>
-
+                        <span className="font-display text-sm font-bold text-white">
+                          {cert.title}
+                        </span>
                         <div className="flex items-center gap-2 shrink-0">
                           <span
                             className={`font-mono-tabular text-[11px] font-semibold ${
                               isAvailable ? 'text-emerald-400' : 'text-slate-400'
                             }`}
                           >
-                            {isAvailable ? 'Available' : 'Coming Soon'}
+                            {isAvailable
+                              ? cert.comparisonBadge
+                              : cert.status}
                           </span>
                           <ChevronDown
                             className={`h-4 w-4 text-slate-400 transition-transform duration-150 ${
@@ -180,41 +250,18 @@ export const BenefitsSection: React.FC<BenefitsSectionProps> = ({
                       </button>
 
                       {isExpanded && (
-                        <div className="mt-3 space-y-3 border-t border-white/[0.06] pt-3 text-xs">
-                          <p className="leading-relaxed text-slate-300">
-                            {cert.description}
-                          </p>
-
-                          {isAvailable ? (
-                            <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
-                              <div className="space-y-0.5 font-mono-tabular text-xs">
-                                <p className="text-slate-300">
-                                  Free: <strong className="text-white">{cert.freeTierLabel}</strong>
-                                </p>
-                                <p className="text-emerald-400">
-                                  Community: <strong>{cert.communityTierLabel}</strong>
-                                </p>
-                              </div>
-
-                              {cert.freeUrl && (
-                                <a
-                                  href={cert.freeUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-2 text-xs font-bold text-emerald-300 transition-colors hover:bg-emerald-500 hover:text-slate-950 whitespace-nowrap"
-                                >
-                                  <span>{cert.freeCtaText}</span>
-                                  <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-                                </a>
-                              )}
-                            </div>
-                          ) : (
-                            <div className="flex items-center justify-between text-xs text-slate-400">
-                              <span>Status: Coming Soon</span>
-                              <span className="font-mono-tabular font-semibold text-emerald-400/90">
-                                {cert.badge}
-                              </span>
-                            </div>
+                        <div className="mt-2.5 flex flex-col gap-2.5 border-t border-white/[0.06] pt-2.5 text-xs sm:flex-row sm:items-center sm:justify-between">
+                          <p className="text-slate-300">{cert.description}</p>
+                          {isAvailable && cert.freeUrl && (
+                            <a
+                              href={cert.freeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex min-h-[38px] shrink-0 items-center justify-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 whitespace-nowrap"
+                            >
+                              <span>{cert.freeCtaText}</span>
+                              <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                            </a>
                           )}
                         </div>
                       )}
@@ -223,55 +270,7 @@ export const BenefitsSection: React.FC<BenefitsSectionProps> = ({
                 })}
               </div>
             </div>
-
-            <p className="mt-4 text-xs text-slate-400">
-              Additional NISM certification banks will be unlocked inside the community as they launch.
-            </p>
           </article>
-
-          {/* CARDS 3, 4, 5, 6: BROADER COMMUNITY PILLARS */}
-          {additionalOverviewCards.map((card, index) => (
-            <article
-              key={card.id}
-              className="flex flex-col justify-between rounded-2xl border border-white/[0.08] bg-[#0B0F16] p-6 transition-colors duration-150 hover:border-white/[0.16] lg:col-span-3"
-            >
-              <div>
-                <p className="font-mono-tabular text-xs font-semibold tracking-wider text-emerald-400">
-                  0{index + 3} · {card.category}
-                </p>
-
-                <h3 className="mt-2.5 font-display text-lg font-bold text-white">
-                  {card.title}
-                </h3>
-
-                <p className="mt-2 text-xs leading-relaxed text-slate-300 sm:text-sm">
-                  {card.description}
-                </p>
-
-                <ul className="mt-4 space-y-1.5 border-t border-white/[0.06] pt-3.5">
-                  {card.highlights.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-2 text-xs text-slate-300"
-                    >
-                      <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mt-5 pt-2">
-                <a
-                  href={card.anchor}
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:text-emerald-300 underline underline-offset-4"
-                >
-                  <span>Explore details</span>
-                  <span>↓</span>
-                </a>
-              </div>
-            </article>
-          ))}
         </div>
       </div>
     </section>

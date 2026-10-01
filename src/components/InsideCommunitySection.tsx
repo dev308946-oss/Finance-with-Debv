@@ -14,7 +14,7 @@ export const InsideCommunitySection: React.FC = () => {
           {/* Left Column */}
           <div className="lg:col-span-5">
             <p className="text-xs font-semibold tracking-wider text-emerald-400">
-              08. WHAT YOU CAN EXPECT
+              INSIDE THE COMMUNITY
             </p>
             <h2
               className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-4xl"
@@ -33,24 +33,36 @@ export const InsideCommunitySection: React.FC = () => {
               {items.map((item, idx) => (
                 <div
                   key={item.id}
-                  className="relative rounded-2xl border border-white/[0.08] bg-[#0B0F16] p-5 sm:p-6 transition-colors duration-150 hover:border-white/[0.16]"
+                  className={`relative rounded-2xl border p-5 sm:p-6 transition-colors duration-150 ${
+                    item.featured
+                      ? 'border-emerald-500/45 bg-[#0C141E]'
+                      : 'border-white/[0.08] bg-[#0B0F16] hover:border-white/[0.16]'
+                  }`}
                 >
                   {/* Timeline Node Marker */}
                   <span
                     aria-hidden="true"
-                    className="absolute -left-[31px] sm:-left-[39px] top-6 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-emerald-400 bg-[#06080C]"
+                    className={`absolute -left-[31px] sm:-left-[39px] top-6 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 ${
+                      item.featured
+                        ? 'border-emerald-400 bg-emerald-400'
+                        : 'border-emerald-400 bg-[#06080C]'
+                    }`}
                   />
 
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-mono-tabular font-bold tracking-wider text-emerald-400">
-                      {item.label}
+                      {item.kicker}
                     </span>
                     <span className="font-mono-tabular text-slate-500">
                       0{idx + 1}
                     </span>
                   </div>
 
-                  <p className="mt-2 text-sm leading-relaxed text-slate-200 sm:text-base">
+                  <h3 className="mt-2 font-display text-lg font-bold text-white sm:text-xl">
+                    {item.title}
+                  </h3>
+
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-300">
                     {item.description}
                   </p>
                 </div>

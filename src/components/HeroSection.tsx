@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowUpRight, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { ArrowUpRight, ExternalLink, Check } from 'lucide-react';
 import { SITE_CONFIG } from '../config/siteConfig';
 
 interface HeroSectionProps {
@@ -11,7 +11,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onPaymentLinkClick,
   onPremiumIpoClick,
 }) => {
-  const [activeTab, setActiveTab] = useState<'community' | 'ipo' | 'resources'>('community');
+  const [activeTab, setActiveTab] = useState<'brief' | 'ipo' | 'community'>('brief');
+  const { dailyBriefSpotlight } = SITE_CONFIG.whatIsInside;
 
   return (
     <section className="relative overflow-hidden border-b border-white/[0.08] bg-market-grid pt-7 pb-14 sm:pt-14 sm:pb-22">
@@ -70,14 +71,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               {SITE_CONFIG.hero.headline}
             </h1>
 
-            {/* Subheadline */}
+            {/* Supporting Text (Updated as requested) */}
             <p className="mt-4 max-w-2xl text-base font-medium leading-relaxed text-slate-200 sm:text-lg">
               {SITE_CONFIG.hero.subheadline}
-            </p>
-
-            {/* Supporting Line */}
-            <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-slate-400 sm:text-base">
-              {SITE_CONFIG.brand.supportingLine}
             </p>
 
             {/* Above-the-fold Pricing Block */}
@@ -115,7 +111,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* Broad Finance Topics Line (Clean Unboxed Typography) */}
             <div className="mt-7 border-t border-white/[0.07] pt-4">
               <p className="text-[11px] font-semibold tracking-wider text-slate-400">
-                WHAT WE COVER ACROSS THE COMMUNITY
+                FINANCE + RESEARCH + LEARNING + COMMUNITY
               </p>
               <p className="mt-1.5 text-xs leading-relaxed text-slate-300 sm:text-sm">
                 {SITE_CONFIG.brand.topicsCovered.join('  ·  ')}
@@ -132,7 +128,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     {SITE_CONFIG.brand.communityName}
                   </p>
                   <h2 className="font-display text-sm font-bold text-white sm:text-base">
-                    Community, Tools & Resources
+                    Daily Briefs, Tools & Community
                   </h2>
                 </div>
 
@@ -145,15 +141,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <button
                     type="button"
                     role="tab"
-                    aria-selected={activeTab === 'community'}
-                    onClick={() => setActiveTab('community')}
+                    aria-selected={activeTab === 'brief'}
+                    onClick={() => setActiveTab('brief')}
                     className={`min-h-[34px] rounded-md px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap ${
-                      activeTab === 'community'
+                      activeTab === 'brief'
                         ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
-                    Discussions
+                    Daily Brief
                   </button>
                   <button
                     type="button"
@@ -166,75 +162,76 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
-                    IPO Tool
+                    IPO & Tools
                   </button>
                   <button
                     type="button"
                     role="tab"
-                    aria-selected={activeTab === 'resources'}
-                    onClick={() => setActiveTab('resources')}
+                    aria-selected={activeTab === 'community'}
+                    onClick={() => setActiveTab('community')}
                     className={`min-h-[34px] rounded-md px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap ${
-                      activeTab === 'resources'
+                      activeTab === 'community'
                         ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
-                    Resources & NISM
+                    Community
                   </button>
                 </div>
               </div>
 
-              {/* Tab 1: Community & Market Discussions */}
-              {activeTab === 'community' && (
+              {/* Tab 1: Daily Market Brief */}
+              {activeTab === 'brief' && (
                 <div className="mt-4 space-y-3.5">
-                  <div className="divide-y divide-white/[0.06]">
-                    <div className="pb-3">
-                      <p className="text-xs font-semibold text-emerald-400">
-                        Market, Sector & Company Discussions
-                      </p>
-                      <p className="mt-1 text-xs leading-relaxed text-slate-300">
-                        Break down company earnings, business models, sector KPIs, macro developments and upcoming IPOs with serious learners.
-                      </p>
-                    </div>
-                    <div className="py-3">
-                      <p className="text-xs font-semibold text-white">
-                        Curated Finance Library & Assignments
-                      </p>
-                      <p className="mt-1 text-xs leading-relaxed text-slate-300">
-                        Handpicked books, documentaries, research reports, practical assignments and analytical frameworks.
-                      </p>
-                    </div>
-                    <div className="pt-3">
-                      <p className="text-xs font-semibold text-white">
-                        Finance-Focused Peer Network
-                      </p>
-                      <p className="mt-1 text-xs leading-relaxed text-slate-300">
-                        Connect with members at different stages of their finance journey to discuss concepts, valuation and career questions.
-                      </p>
-                    </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-mono-tabular font-bold tracking-wider text-emerald-400">
+                      {dailyBriefSpotlight.badge}
+                    </span>
+                    <span className="text-slate-400">Member Benefit 01</span>
                   </div>
 
-                  <div className="flex items-center justify-between border-t border-white/[0.07] pt-3 text-xs">
-                    <span className="text-slate-400">Educational & discussion-based</span>
+                  <div>
+                    <h3 className="font-display text-base font-bold text-white sm:text-lg">
+                      {dailyBriefSpotlight.title}
+                    </h3>
+                    <p className="mt-0.5 text-xs font-medium text-emerald-300/95">
+                      {dailyBriefSpotlight.subtitle}
+                    </p>
+                  </div>
+
+                  <ul className="grid grid-cols-1 gap-2 border-t border-b border-white/[0.07] py-3.5 sm:grid-cols-2">
+                    {dailyBriefSpotlight.bullets.map((bullet) => (
+                      <li
+                        key={bullet}
+                        className="flex items-start gap-2 text-xs text-slate-200"
+                      >
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400" />
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="flex items-center justify-between pt-0.5 text-xs">
+                    <span className="text-slate-400">Concise & educational</span>
                     <a
-                      href="#discussions"
+                      href="#what-is-inside"
                       className="font-semibold text-emerald-400 hover:text-emerald-300 underline underline-offset-4 whitespace-nowrap"
                     >
-                      Explore Discussions ↓
+                      See All Benefits ↓
                     </a>
                   </div>
                 </div>
               )}
 
-              {/* Tab 2: IPO Research Tool */}
+              {/* Tab 2: IPO Research & Practice Tools */}
               {activeTab === 'ipo' && (
                 <div className="mt-4 space-y-4">
                   <div>
                     <p className="text-xs font-semibold text-emerald-400">
-                      IPO Analysis & Discussion
+                      IPO Research & Certification Practice
                     </p>
                     <p className="mt-1 text-xs leading-relaxed text-slate-300">
-                      Compare the public Basic IPO Check with the member-only Premium IPO Analysis experience.
+                      Basic IPO checking for everyone, with more detailed IPO analysis and practice banks available to community members.
                     </p>
                   </div>
 
@@ -260,7 +257,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       rel="noopener noreferrer"
                       className="inline-flex min-h-[40px] flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/[0.12] bg-white/[0.03] px-3 py-2 text-xs font-semibold text-slate-200 hover:bg-white/[0.07] whitespace-nowrap"
                     >
-                      <span>Try Basic IPO Check</span>
+                      <span>TRY FREE IPO CHECK</span>
                       <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                     </a>
                     <a
@@ -275,46 +272,43 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </div>
               )}
 
-              {/* Tab 3: Resources & Modular NISM Suite */}
-              {activeTab === 'resources' && (
+              {/* Tab 3: Discussions, Resources & Community */}
+              {activeTab === 'community' && (
                 <div className="mt-4 space-y-3.5">
-                  <p className="text-xs leading-relaxed text-slate-300">
-                    Access curated books, articles, assignments and certification practice modules:
-                  </p>
-
-                  <div className="space-y-2 border-t border-b border-white/[0.07] py-3 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-2 text-white font-medium">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-                        <span>NISM Series XV (Research Analyst)</span>
-                      </span>
-                      <span className="font-mono-tabular text-emerald-400">40 Free / 80 Member</span>
+                  <div className="divide-y divide-white/[0.06]">
+                    <div className="pb-3">
+                      <p className="text-xs font-semibold text-emerald-400">
+                        Market, Sector & Company Discussions
+                      </p>
+                      <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                        Discuss market movements, companies, sectors and important financial developments.
+                      </p>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-300">NISM Series VIII (Equity Derivatives)</span>
-                      <span className="font-mono-tabular text-slate-400">Coming Soon</span>
+                    <div className="py-3">
+                      <p className="text-xs font-semibold text-white">
+                        Finance Learning Resources
+                      </p>
+                      <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                        Books, movies, articles, assignments and other curated finance resources.
+                      </p>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-300">NISM Commodity Derivatives</span>
-                      <span className="font-mono-tabular text-slate-400">Coming Soon</span>
+                    <div className="pt-3">
+                      <p className="text-xs font-semibold text-white">
+                        Finance-Focused Community
+                      </p>
+                      <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                        Connect with people interested in CFA, equity research, markets, valuation and finance careers.
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-1 text-xs">
+                  <div className="flex items-center justify-between border-t border-white/[0.07] pt-3 text-xs">
+                    <span className="text-slate-400">Educational & discussion-based</span>
                     <a
-                      href={SITE_CONFIG.links.FREE_NISM_XV_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 font-semibold text-emerald-400 hover:text-emerald-300 underline underline-offset-4 whitespace-nowrap"
+                      href="#community"
+                      className="font-semibold text-emerald-400 hover:text-emerald-300 underline underline-offset-4 whitespace-nowrap"
                     >
-                      <span>Try 40 Free NISM XV MCQs</span>
-                      <ExternalLink className="h-3 w-3 shrink-0" />
-                    </a>
-                    <a
-                      href="#tools"
-                      className="text-slate-400 hover:text-white whitespace-nowrap"
-                    >
-                      All Tools ↓
+                      Explore Community ↓
                     </a>
                   </div>
                 </div>

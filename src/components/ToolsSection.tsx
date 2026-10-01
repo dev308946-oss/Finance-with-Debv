@@ -9,7 +9,8 @@ interface ToolsSectionProps {
 export const ToolsSection: React.FC<ToolsSectionProps> = ({
   onPremiumIpoClick,
 }) => {
-  const { heading, tool01, tool02, tool03, tool04 } = SITE_CONFIG.toolsSection;
+  const { heading, basicIpoTool } = SITE_CONFIG.toolsSection;
+  const certifications = SITE_CONFIG.nismCertifications;
 
   return (
     <section
@@ -19,7 +20,7 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold tracking-wider text-emerald-400">
-            06. DIGITAL TOOLS
+            RESEARCH & PRACTICE TOOLS
           </p>
           <h2
             className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-4xl"
@@ -30,39 +31,39 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* TOOL 01 — IPO CHECK (FREE) + PREMIUM IPO ANALYSIS (COMMUNITY) */}
+          {/* TOOL 01 — BASIC IPO CHECK + PREMIUM IPO ANALYSIS */}
           <article className="flex flex-col justify-between rounded-2xl border border-emerald-500/30 bg-[#0C121B] p-6 sm:p-8 lg:col-span-6">
             <div>
               <div className="flex items-center justify-between text-xs">
                 <span className="font-mono-tabular font-semibold tracking-wider text-emerald-400">
-                  {tool01.code}
+                  {basicIpoTool.code}
                 </span>
                 <span className="font-mono-tabular font-semibold text-slate-300">
-                  {tool01.freeBadge} & {tool01.premiumBadge}
+                  {basicIpoTool.badge} & {basicIpoTool.premiumBadge}
                 </span>
               </div>
 
-              {/* Part A: Free IPO Check */}
+              {/* Part A: Basic IPO Check */}
               <div className="mt-4">
                 <div className="flex items-baseline justify-between gap-2">
                   <h3 className="font-display text-xl font-bold text-white sm:text-2xl">
-                    {tool01.freeTitle}
+                    {basicIpoTool.title}
                   </h3>
                   <span className="font-mono-tabular text-xs font-bold tracking-wider text-slate-300">
-                    {tool01.freeBadge}
+                    {basicIpoTool.badge}
                   </span>
                 </div>
                 <p className="mt-1.5 text-sm leading-relaxed text-slate-300">
-                  {tool01.freeDescription}
+                  {basicIpoTool.description}
                 </p>
                 <div className="mt-4">
                   <a
-                    href={tool01.freeUrl}
+                    href={basicIpoTool.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-white/[0.14] bg-white/[0.04] px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-white/[0.09] sm:w-auto whitespace-nowrap"
                   >
-                    <span>{tool01.freeButtonText}</span>
+                    <span>{basicIpoTool.buttonText}</span>
                     <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                   </a>
                 </div>
@@ -75,22 +76,22 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
               <div className="border-l-2 border-emerald-500 pl-4">
                 <div className="flex items-baseline justify-between gap-2">
                   <h4 className="font-display text-lg font-bold text-white sm:text-xl">
-                    {tool01.premiumTitle}
+                    {basicIpoTool.premiumTitle}
                   </h4>
                   <span className="font-mono-tabular text-xs font-bold tracking-wider text-emerald-400">
-                    {tool01.premiumBadge}
+                    {basicIpoTool.premiumBadge}
                   </span>
                 </div>
                 <p className="mt-1.5 text-sm leading-relaxed text-slate-300">
-                  {tool01.premiumDescription}
+                  {basicIpoTool.premiumDescription}
                 </p>
                 <div className="mt-4">
                   <a
-                    href={tool01.premiumUrl}
+                    href={basicIpoTool.premiumUrl}
                     onClick={(e) => onPremiumIpoClick(e, 'tools_section_premium_ipo')}
                     className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-xs font-bold text-slate-950 transition-colors hover:bg-emerald-400 sm:w-auto whitespace-nowrap"
                   >
-                    <span>{tool01.premiumButtonText}</span>
+                    <span>{basicIpoTool.premiumButtonText}</span>
                     <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
                   </a>
                 </div>
@@ -98,100 +99,60 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
             </div>
           </article>
 
-          {/* RIGHT COLUMN: TOOL 02, TOOL 03, TOOL 04 */}
-          <div className="grid grid-cols-1 gap-5 lg:col-span-6">
-            {/* TOOL 02 — NISM XV PRACTICE */}
-            <article className="flex flex-col justify-between rounded-2xl border border-white/[0.09] bg-[#0B0F16] p-6">
-              <div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-mono-tabular font-semibold tracking-wider text-emerald-400">
-                    {tool02.code}
-                  </span>
-                  <span className="font-mono-tabular font-bold text-emerald-400">
-                    {tool02.comparisonBadge}
-                  </span>
-                </div>
-
-                <h3 className="mt-2 font-display text-lg font-bold text-white sm:text-xl">
-                  {tool02.title}
-                </h3>
-
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-300">
-                  {tool02.description}
-                </p>
-              </div>
-
-              <div className="mt-4 flex flex-col gap-3 border-t border-white/[0.07] pt-4 sm:flex-row sm:items-center sm:justify-between">
-                <span className="font-mono-tabular text-xs font-semibold text-slate-300">
-                  {tool02.comparisonBadge}
-                </span>
-
-                <a
-                  href={tool02.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-[42px] items-center justify-center gap-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-xs font-bold text-emerald-300 transition-colors hover:bg-emerald-500 hover:text-slate-950 whitespace-nowrap"
+          {/* RIGHT COLUMN: EXPANDABLE / ADDABLE CERTIFICATION PRACTICE TOOLS */}
+          <div className="flex flex-col gap-4 lg:col-span-6">
+            {certifications.map((cert) => {
+              const isAvailable = cert.status === 'AVAILABLE';
+              return (
+                <article
+                  key={cert.id}
+                  className="flex flex-col justify-between rounded-2xl border border-white/[0.09] bg-[#0B0F16] p-5 sm:p-6"
                 >
-                  <span>{tool02.buttonText}</span>
-                  <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-                </a>
-              </div>
-            </article>
+                  <div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-mono-tabular font-semibold tracking-wider text-slate-400">
+                        {cert.code}
+                      </span>
+                      <span
+                        className={`font-mono-tabular text-xs font-bold tracking-wider ${
+                          isAvailable ? 'text-emerald-400' : 'text-slate-400'
+                        }`}
+                      >
+                        {isAvailable
+                          ? cert.comparisonBadge
+                          : cert.status}
+                      </span>
+                    </div>
 
-            {/* TOOL 03 & TOOL 04 SIDE-BY-SIDE */}
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              {/* TOOL 03 — NISM VIII EQUITY DERIVATIVES */}
-              <article className="flex flex-col justify-between rounded-2xl border border-white/[0.08] bg-[#0B0F16] p-5">
-                <div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-mono-tabular font-semibold text-slate-400">
-                      {tool03.code}
-                    </span>
-                    <span className="font-mono-tabular text-[11px] font-bold tracking-wider text-emerald-400">
-                      {tool03.status}
-                    </span>
+                    <h3 className="mt-2 font-display text-base font-bold text-white sm:text-lg">
+                      {cert.title}
+                    </h3>
+
+                    <p className="mt-1.5 text-xs leading-relaxed text-slate-300 sm:text-sm">
+                      {cert.description}
+                    </p>
                   </div>
 
-                  <h3 className="mt-2.5 font-display text-base font-bold text-white">
-                    {tool03.title}
-                  </h3>
+                  {isAvailable && cert.freeUrl && (
+                    <div className="mt-4 flex flex-col gap-3 border-t border-white/[0.07] pt-4 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="font-mono-tabular text-xs font-semibold text-emerald-400">
+                        {cert.comparisonBadge}
+                      </span>
 
-                  <p className="mt-1.5 text-xs leading-relaxed text-slate-400">
-                    {tool03.description}
-                  </p>
-                </div>
-
-                <div className="mt-4 border-t border-white/[0.06] pt-3 text-[11px] font-mono-tabular text-slate-400">
-                  Planned for Community Members
-                </div>
-              </article>
-
-              {/* TOOL 04 — NISM COMMODITY DERIVATIVES */}
-              <article className="flex flex-col justify-between rounded-2xl border border-white/[0.08] bg-[#0B0F16] p-5">
-                <div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-mono-tabular font-semibold text-slate-400">
-                      {tool04.code}
-                    </span>
-                    <span className="font-mono-tabular text-[11px] font-bold tracking-wider text-emerald-400">
-                      {tool04.status}
-                    </span>
-                  </div>
-
-                  <h3 className="mt-2.5 font-display text-base font-bold text-white">
-                    {tool04.title}
-                  </h3>
-
-                  <p className="mt-1.5 text-xs leading-relaxed text-slate-400">
-                    {tool04.description}
-                  </p>
-                </div>
-
-                <div className="mt-4 border-t border-white/[0.06] pt-3 text-[11px] font-mono-tabular text-slate-400">
-                  Planned for Community Members
-                </div>
-              </article>
-            </div>
+                      <a
+                        href={cert.freeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex min-h-[42px] items-center justify-center gap-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-xs font-bold text-emerald-300 transition-colors hover:bg-emerald-500 hover:text-slate-950 whitespace-nowrap"
+                      >
+                        <span>{cert.freeCtaText}</span>
+                        <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                      </a>
+                    </div>
+                  )}
+                </article>
+              );
+            })}
           </div>
         </div>
       </div>

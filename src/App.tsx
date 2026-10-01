@@ -9,12 +9,12 @@ import { trackEvent } from './utils/analytics';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { BenefitsSection } from './components/BenefitsSection';
+import { ComparisonSection } from './components/ComparisonSection';
+import { InsideCommunitySection } from './components/InsideCommunitySection';
 import { DiscussionsAndResourcesSection } from './components/DiscussionsAndResourcesSection';
 import { ContributorsSection } from './components/ContributorsSection';
-import { ComparisonSection } from './components/ComparisonSection';
 import { ToolsSection } from './components/ToolsSection';
 import { AudienceAndNoteSection } from './components/AudienceAndNoteSection';
-import { InsideCommunitySection } from './components/InsideCommunitySection';
 import { PricingSection } from './components/PricingSection';
 import { FaqAndFinalCtaSection } from './components/FaqAndFinalCtaSection';
 import { InteractiveModals, ModalType } from './components/InteractiveModals';
@@ -74,39 +74,39 @@ export default function App() {
       {/* Top Bar Navigation */}
       <Navbar onPaymentLinkClick={handlePaymentLinkClick} />
 
-      {/* 12-Section Conversion Flow */}
+      {/* Main Content Flow */}
       <main>
-        {/* SECTION 1 — HERO SECTION */}
+        {/* 1. Hero Section */}
         <HeroSection
           onPaymentLinkClick={handlePaymentLinkClick}
           onPremiumIpoClick={handlePremiumIpoClick}
         />
 
-        {/* SECTION 2 — WHAT IS INSIDE? (6 Cards + Expandable Multi-NISM Prep) */}
+        {/* 2. What's Inside the Community (Daily Market Brief + 01–06 Ordered Benefits) */}
         <BenefitsSection onPremiumIpoClick={handlePremiumIpoClick} />
 
-        {/* SECTION 3 — MARKET DISCUSSIONS & SECTION 4 — LEARNING RESOURCES */}
-        <DiscussionsAndResourcesSection />
-
-        {/* SECTION 5 — COMMUNITY & CFA LEVEL 1 CONTRIBUTORS */}
-        <ContributorsSection />
-
-        {/* SECTION 6 — FREE VS COMMUNITY COMPARISON */}
+        {/* 3. Free vs Community Comparison */}
         <ComparisonSection onPaymentLinkClick={handlePaymentLinkClick} />
 
-        {/* SECTION 7 — TOOLS (TOOL 01 TO TOOL 04) */}
-        <ToolsSection onPremiumIpoClick={handlePremiumIpoClick} />
-
-        {/* SECTION 8 — WHO IS THIS FOR? */}
-        <AudienceAndNoteSection />
-
-        {/* SECTION 9 — WHAT YOU CAN EXPECT (WHAT HAPPENS INSIDE?) */}
+        {/* 4. What Happens Inside the Community? (Ongoing Activity Feed) */}
         <InsideCommunitySection />
 
-        {/* SECTION 10 — PRICING */}
+        {/* 5. Market Discussions & Curated Learning Resources */}
+        <DiscussionsAndResourcesSection />
+
+        {/* 6. Finance-Focused Community (4 Member Stage Cards) */}
+        <ContributorsSection />
+
+        {/* 7. Tools (Basic IPO Check + Expandable NISM Certification Suite) */}
+        <ToolsSection onPremiumIpoClick={handlePremiumIpoClick} />
+
+        {/* 8. Who Should Join? */}
+        <AudienceAndNoteSection />
+
+        {/* 9. Pricing Card */}
         <PricingSection onPaymentLinkClick={handlePaymentLinkClick} />
 
-        {/* SECTION 11 — FAQ & SECTION 12 — FINAL CTA + STICKY MOBILE BAR */}
+        {/* 10. FAQ + Final Message CTA + Sticky Mobile Bottom CTA */}
         <FaqAndFinalCtaSection
           onPaymentLinkClick={handlePaymentLinkClick}
           onSocialOrCommunityClick={handleSocialOrCommunityClick}
