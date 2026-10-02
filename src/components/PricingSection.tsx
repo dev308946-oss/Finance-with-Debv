@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Check, ArrowUpRight, ExternalLink } from 'lucide-react';
-import { SITE_CONFIG } from '../config/siteConfig';
+import { Check, ArrowUpRight, ExternalLink, Copy } from 'lucide-react';
+import { SITE_CONFIG, OFFICIAL_UPI_ID } from '../config/siteConfig';
 import { trackEvent } from '../utils/analytics';
 
 interface PricingSectionProps {
@@ -12,6 +12,18 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
   onPaymentLinkClick,
 }) => {
   const { pricingSection, pricing, founderSection, links } = SITE_CONFIG;
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopyUpi = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(OFFICIAL_UPI_ID).then(() => {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2500);
+    }).catch(() => {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2500);
+    });
+  };
 
   return (
     <>
@@ -63,11 +75,28 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
                   onClick={() =>
                     trackEvent(SITE_CONFIG.analytics.events.nismTestClick, {
                       url: links.FREE_NISM_XV_URL,
+                      tool: 'nism_xv',
                     })
                   }
                   className="inline-flex min-h-[40px] items-center justify-center gap-1.5 rounded-[10px] border border-[#1B2735] bg-[#070B12] px-4 py-2 text-xs font-semibold text-[#F5F7FA] transition-colors hover:border-[#19D3A2]/50 hover:text-[#19D3A2] whitespace-nowrap"
                 >
                   <span>TRY 40 FREE NISM XV MCQs</span>
+                  <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                </a>
+
+                <a
+                  href={links.FREE_NISM_VIII_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() =>
+                    trackEvent(SITE_CONFIG.analytics.events.nismTestClick, {
+                      url: links.FREE_NISM_VIII_URL,
+                      tool: 'nism_viii',
+                    })
+                  }
+                  className="inline-flex min-h-[40px] items-center justify-center gap-1.5 rounded-[10px] border border-[#1B2735] bg-[#070B12] px-4 py-2 text-xs font-semibold text-[#F5F7FA] transition-colors hover:border-[#19D3A2]/50 hover:text-[#19D3A2] whitespace-nowrap"
+                >
+                  <span>TRY 40 FREE NISM VIII MCQs</span>
                   <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                 </a>
               </div>
@@ -122,8 +151,49 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
               ))}
             </ul>
 
+            {/* Official UPI Payment Box */}
+            <div className="mt-7 rounded-[14px] border border-[#1B2735] bg-[#070B12] p-4">
+              <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-mono-tabular text-[10px] font-semibold tracking-wider uppercase text-[#8D99A8]">
+                    OFFICIAL COMMUNITY UPI ID
+                  </p>
+                  <p className="mt-0.5 font-mono-tabular text-[15px] font-bold text-[#F5F7FA] select-all">
+                    {OFFICIAL_UPI_ID}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleCopyUpi}
+                  className={`inline-flex min-h-[36px] items-center justify-center gap-1.5 rounded-[10px] px-3 py-1.5 text-xs font-bold transition-all duration-150 shrink-0 ${
+                    isCopied
+                      ? 'bg-[#19D3A2] text-[#070B12]'
+                      : 'border border-[#19D3A2]/40 bg-[#19D3A2]/10 text-[#19D3A2] hover:bg-[#16E0A5] hover:text-[#070B12]'
+                  }`}
+                >
+                  {isCopied ? (
+                    <>
+                      <Check className="h-3.5 w-3.5" />
+                      <span>COPIED ✓</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-3.5 w-3.5" />
+                      <span>COPY UPI ID</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <div className="mt-2.5 flex items-center justify-between border-t border-[#1B2735] pt-2 text-[11px] text-[#8D99A8]">
+                <span>Amount: <strong className="text-[#F5F7FA]">₹199</strong></span>
+                <span>Manual Verification</span>
+              </div>
+            </div>
+
             {/* Primary CTA */}
-            <div className="mt-8">
+            <div className="mt-6">
               <a
                 href={links.PAYMENT_URL}
                 onClick={(e) => onPaymentLinkClick(e, 'pricing_card_cta')}

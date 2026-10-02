@@ -7,11 +7,13 @@
  */
 
 export const PAYMENT_LINK = 'YOUR_PAYMENT_LINK_HERE';
+export const OFFICIAL_UPI_ID = 'dev.sachdeva@ptyes';
 export const COMMUNITY_PRICE = '₹199';
 export const MEMBERSHIP_DURATION = '1 Month';
 export const ADMIN_EMAIL = 'YOUR_ADMIN_EMAIL_HERE';
 
 export const FREE_NISM_XV_URL = 'https://nismxvresearchanalyst-4m18.vercel.app/';
+export const FREE_NISM_VIII_URL = 'https://nism-series-viii-equity-derivatives-practice-tst-9342.ai.studio';
 export const FREE_IPO_TOOL_URL = 'https://ipo-check-financewithdev.ai.studio';
 export const PREMIUM_IPO_TOOL_URL = 'YOUR_COMMUNITY_IPO_TOOL_LINK';
 export const PAYMENT_URL = PAYMENT_LINK;
@@ -60,6 +62,7 @@ export const SITE_CONFIG = {
   // 1. CENTRAL CONFIGURATION & LINKS
   membershipConfig: {
     PAYMENT_LINK,
+    OFFICIAL_UPI_ID,
     COMMUNITY_PRICE,
     MEMBERSHIP_DURATION,
     ADMIN_EMAIL,
@@ -74,6 +77,7 @@ export const SITE_CONFIG = {
   links: {
     PAYMENT_LINK,
     FREE_NISM_XV_URL,
+    FREE_NISM_VIII_URL,
     FREE_IPO_TOOL_URL,
     PREMIUM_IPO_TOOL_URL,
     PAYMENT_URL,
@@ -183,21 +187,28 @@ export const SITE_CONFIG = {
     nismSeriesXv: {
       name: 'NISM Series XV — Research Analyst Practice',
       upperName: 'NISM SERIES XV',
-      label: 'Free Practice',
+      label: 'FREE PRACTICE',
+      subLabel: '40 Free MCQs',
       subtitle: 'Research Analyst Practice',
-      description: 'Practice with 40 free MCQs.',
+      description: 'Practice with 40 free MCQs. Unlock 40 additional questions with an access code.',
+      previewTitle: 'NISM Series XV — Research Analyst',
+      previewTier1: '40 Free MCQs',
+      previewTier2: '40 Additional MCQs — Unlock with Code',
       ctaText: 'TRY 40 FREE MCQs',
       url: FREE_NISM_XV_URL,
-      upcomingTools: [
-        {
-          title: 'NISM Series VIII — Equity Derivatives',
-          status: 'Coming Soon',
-        },
-        {
-          title: 'NISM Commodity Derivatives',
-          status: 'Coming Soon',
-        },
-      ],
+    },
+    nismSeriesViii: {
+      name: 'NISM Series VIII — Equity Derivatives Practice',
+      upperName: 'NISM SERIES VIII',
+      label: 'FREE PRACTICE',
+      subLabel: '40 Free MCQs',
+      subtitle: 'Equity Derivatives Practice',
+      description: 'Practice with 40 free MCQs. Unlock 40 additional questions with an access code.',
+      previewTitle: 'NISM Series VIII — Equity Derivatives',
+      previewTier1: '40 Free MCQs',
+      previewTier2: '40 Additional MCQs — Unlock with Code',
+      ctaText: 'TRY 40 FREE MCQs',
+      url: FREE_NISM_VIII_URL,
     },
   },
 
@@ -349,7 +360,7 @@ export const SITE_CONFIG = {
         id: 'faq-3',
         question: 'Can I try anything before joining?',
         answer:
-          'Yes. You can try the IPO Check tool and the 40 free NISM Series XV Research Analyst practice questions.',
+          'Yes. You can try the IPO Check tool, the 40 free NISM Series XV Research Analyst practice questions, and the 40 free NISM Series VIII Equity Derivatives practice questions.',
       },
       {
         id: 'faq-4',

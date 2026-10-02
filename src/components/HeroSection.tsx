@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowUpRight, Newspaper, BarChart3, BrainCircuit } from 'lucide-react';
+import { ArrowUpRight, Newspaper, BarChart3, BrainCircuit, TrendingUp } from 'lucide-react';
 import { SITE_CONFIG } from '../config/siteConfig';
 
 interface HeroSectionProps {
@@ -164,6 +164,29 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   </div>
                   <a
                     href={SITE_CONFIG.links.FREE_NISM_XV_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono-tabular text-[11px] font-semibold text-[#19D3A2] hover:underline whitespace-nowrap"
+                  >
+                    TRY FREE ↗
+                  </a>
+                </div>
+
+                {/* Product 4: NISM Series VIII */}
+                <div className="flex items-center justify-between rounded-[14px] border border-[#1B2735] bg-[#0A1018] px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <TrendingUp className="h-4 w-4 text-[#19D3A2] shrink-0" />
+                    <div>
+                      <p className="text-[13px] font-semibold text-[#F5F7FA]">
+                        NISM Series VIII — Equity Derivatives Practice
+                      </p>
+                      <p className="text-[11px] text-[#8D99A8]">
+                        Practice with 40 free MCQs
+                      </p>
+                    </div>
+                  </div>
+                  <a
+                    href={SITE_CONFIG.links.FREE_NISM_VIII_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-mono-tabular text-[11px] font-semibold text-[#19D3A2] hover:underline whitespace-nowrap"

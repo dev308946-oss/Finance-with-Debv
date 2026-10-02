@@ -11,10 +11,13 @@ import {
   FileText,
   Check,
   ExternalLink,
+  Copy,
+  QrCode,
 } from 'lucide-react';
 import {
   SITE_CONFIG,
   PAYMENT_LINK,
+  OFFICIAL_UPI_ID,
   COMMUNITY_PRICE,
   MEMBERSHIP_DURATION,
 } from '../config/siteConfig';
@@ -133,6 +136,7 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
   // Flow & Validation State
   const [paymentButtonClicked, setPaymentButtonClicked] = useState(false);
   const [placeholderPayNotice, setPlaceholderPayNotice] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const [errors, setErrors] = useState<FormFieldErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedRecord, setSubmittedRecord] = useState<{
@@ -142,6 +146,17 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
   } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleCopyUpi = () => {
+    navigator.clipboard.writeText(OFFICIAL_UPI_ID).then(() => {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2500);
+    }).catch(() => {
+      // Fallback
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2500);
+    });
+  };
 
   if (!activeModal) return null;
 
@@ -748,65 +763,73 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
                   </div>
                 </div>
 
-                {/* STEP 2 — COMPLETE YOUR PAYMENT */}
+                {/* STEP 2 — COMPLETE YOUR PAYMENT VIA UPI */}
                 <div className="mt-7 rounded-[16px] border border-[#19D3A2]/35 bg-[#0A1018] p-5">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-mono-tabular font-bold tracking-wider text-[#19D3A2]">
                       02 · COMPLETE YOUR PAYMENT
                     </span>
                     <span className="font-mono-tabular text-[#8D99A8]">
-                      Manual Verification
+                      Manual UPI Verification
                     </span>
                   </div>
 
                   <h3 className="mt-2 font-display text-lg font-bold text-[#F5F7FA]">
-                    Complete your payment
+                    Payment Details
                   </h3>
 
-                  <div className="mt-3 flex flex-wrap items-baseline justify-between gap-2 border-t border-b border-[#1B2735] py-3.5">
-                    <div>
-                      <p className="font-mono-tabular text-2xl font-extrabold text-[#F5F7FA] sm:text-3xl">
-                        {COMMUNITY_PRICE}
-                      </p>
-                      <p className="mt-0.5 text-xs font-medium text-[#8D99A8]">
-                        Community Membership — {MEMBERSHIP_DURATION}
-                      </p>
+                  {/* UPI Payment Box */}
+                  <div className="mt-3.5 space-y-3 rounded-[14px] border border-[#1B2735] bg-[#070B12] p-4">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[#1B2735] pb-3">
+                      <div>
+                        <p className="font-mono-tabular text-[11px] font-semibold tracking-wider uppercase text-[#8D99A8]">
+                          OFFICIAL UPI ID
+                        </p>
+                        <p className="mt-0.5 font-mono-tabular text-[16px] font-bold text-[#F5F7FA] select-all">
+                          {OFFICIAL_UPI_ID}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleCopyUpi}
+                        className={`inline-flex min-h-[38px] items-center justify-center gap-1.5 rounded-[10px] px-3.5 py-1.5 text-xs font-bold transition-all duration-150 ${
+                          isCopied
+                            ? 'bg-[#19D3A2] text-[#070B12]'
+                            : 'border border-[#19D3A2]/40 bg-[#19D3A2]/10 text-[#19D3A2] hover:bg-[#16E0A5] hover:text-[#070B12]'
+                        }`}
+                      >
+                        {isCopied ? (
+                          <>
+                            <Check className="h-3.5 w-3.5" />
+                            <span>COPIED ✓</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="h-3.5 w-3.5" />
+                            <span>COPY UPI ID</span>
+                          </>
+                        )}
+                      </button>
                     </div>
 
-                    <a
-                      href={PAYMENT_LINK}
-                      target={
-                        PAYMENT_LINK.startsWith('http') ? '_blank' : undefined
-                      }
-                      rel={
-                        PAYMENT_LINK.startsWith('http')
-                          ? 'noopener noreferrer'
-                          : undefined
-                      }
-                      onClick={handlePayButtonClick}
-                      className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-[12px] bg-[#16E0A5] px-6 py-2.5 text-sm font-extrabold tracking-tight text-[#070B12] transition-colors hover:bg-[#19D3A2] active:scale-[0.99] whitespace-nowrap"
-                    >
-                      <span>PAY {COMMUNITY_PRICE}</span>
-                      <ArrowUpRight className="h-4 w-4 shrink-0" />
-                    </a>
+                    <div className="flex items-center justify-between pt-1">
+                      <div>
+                        <p className="font-mono-tabular text-[11px] font-semibold tracking-wider uppercase text-[#8D99A8]">
+                          AMOUNT
+                        </p>
+                        <p className="mt-0.5 font-mono-tabular text-[20px] font-extrabold text-[#F5F7FA]">
+                          {COMMUNITY_PRICE}
+                        </p>
+                      </div>
+                      <span className="font-mono-tabular text-xs text-[#8D99A8]">
+                        1 Month Membership
+                      </span>
+                    </div>
                   </div>
 
-                  {placeholderPayNotice && (
-                    <div className="mt-3 rounded-[10px] border border-[#19D3A2]/25 bg-[#070B12] p-3 text-xs leading-relaxed text-[#8D99A8]">
-                      <span className="font-semibold text-[#19D3A2]">
-                        Payment Link Ready:{' '}
-                      </span>
-                      Configured as{' '}
-                      <code className="font-mono-tabular text-[#F5F7FA]">
-                        {PAYMENT_LINK}
-                      </code>{' '}
-                      in <code className="font-mono-tabular">src/config/siteConfig.ts</code>.
-                      You can proceed below to submit your UTR &amp; screenshot.
-                    </div>
-                  )}
-
-                  <p className="mt-3 text-xs font-medium leading-relaxed text-[#8D99A8]">
-                    After completing the payment, return here and submit your payment details below.
+                  <p className="mt-3.5 text-xs font-medium leading-relaxed text-[#8D99A8]">
+                    Pay <strong className="text-[#F5F7FA]">₹199</strong> to the UPI ID above using any UPI app (GPay, PhonePe, Paytm, etc.). After completing the payment, enter your UTR / Transaction ID and upload your payment screenshot below.
                   </p>
                 </div>
 
