@@ -1,159 +1,418 @@
 import React from 'react';
-import { ExternalLink, ArrowUpRight } from 'lucide-react';
+import { motion } from 'motion/react';
+import {
+  Newspaper,
+  BarChart3,
+  BrainCircuit,
+  ExternalLink,
+  FileText,
+  Eye,
+  CheckCircle2,
+} from 'lucide-react';
 import { SITE_CONFIG } from '../config/siteConfig';
+import { trackEvent } from '../utils/analytics';
 
 interface ToolsSectionProps {
-  onPremiumIpoClick: (e: React.MouseEvent<HTMLAnchorElement>, source: string) => void;
+  onViewClosingBellSample: () => void;
 }
 
 export const ToolsSection: React.FC<ToolsSectionProps> = ({
-  onPremiumIpoClick,
+  onViewClosingBellSample,
 }) => {
-  const { heading, basicIpoTool } = SITE_CONFIG.toolsSection;
-  const certifications = SITE_CONFIG.nismCertifications;
+  const {
+    heading,
+    subtitle,
+    closingBell,
+    ipoCheck,
+    nismSeriesXv,
+  } = SITE_CONFIG.realProductsSection;
+
+  const handleSampleClick = () => {
+    trackEvent(SITE_CONFIG.analytics.events.closingBellSampleClick);
+    onViewClosingBellSample();
+  };
 
   return (
     <section
-      id="tools"
-      className="scroll-mt-16 border-b border-white/[0.08] bg-[#06080C] py-16 sm:py-24"
+      id="real-products"
+      className="scroll-mt-16 border-b border-[#1B2735] bg-[#0A1018] py-16 sm:py-20 lg:py-24"
     >
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
-          <p className="text-xs font-semibold tracking-wider text-emerald-400">
-            RESEARCH & PRACTICE TOOLS
+      <div className="mx-auto max-w-[1140px] px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.4 }}
+          className="max-w-2xl"
+        >
+          <p className="font-mono-tabular text-[11px] font-semibold tracking-[0.14em] uppercase text-[#19D3A2] sm:text-[12px]">
+            CORE PRODUCTS
           </p>
           <h2
-            className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-4xl"
+            className="mt-2 font-display text-[28px] font-bold leading-[1.15] tracking-[-0.02em] text-[#F5F7FA] sm:text-[34px] lg:text-[36px]"
             style={{ textWrap: 'balance' }}
           >
             {heading}
           </h2>
-        </div>
+          <p className="mt-2.5 text-[15px] leading-[1.65] text-[#8D99A8] sm:text-[16px]">
+            {subtitle}
+          </p>
+        </motion.div>
 
-        <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* TOOL 01 — BASIC IPO CHECK + PREMIUM IPO ANALYSIS */}
-          <article className="flex flex-col justify-between rounded-2xl border border-emerald-500/30 bg-[#0C121B] p-6 sm:p-8 lg:col-span-6">
-            <div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-mono-tabular font-semibold tracking-wider text-emerald-400">
-                  {basicIpoTool.code}
+        {/* FOCAL HERO PRODUCT: THE CLOSING BELL (LARGE PUBLICATION PREVIEW) */}
+        <motion.article
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.45 }}
+          className="card-elevate mt-10 rounded-[18px] border border-[#19D3A2]/35 bg-[#0D141D] p-6 shadow-[0_18px_45px_rgba(0,0,0,0.35)] sm:p-8 lg:p-10"
+        >
+          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-10">
+            {/* Left Column: Editorial Product Positioning (5 Cols) */}
+            <div className="lg:col-span-5">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-[#19D3A2]/30 bg-[#19D3A2]/10 text-[#19D3A2]">
+                  <Newspaper className="h-4 w-4" />
+                </div>
+                <span className="font-mono-tabular text-[11px] font-bold tracking-[0.14em] uppercase text-[#19D3A2]">
+                  DAILY MARKET BRIEF
                 </span>
-                <span className="font-mono-tabular font-semibold text-slate-300">
-                  {basicIpoTool.badge} & {basicIpoTool.premiumBadge}
+                <span aria-hidden="true" className="text-[#1B2735]">
+                  •
+                </span>
+                <span className="font-mono-tabular text-[11px] font-medium text-[#8D99A8]">
+                  Every Market Day
                 </span>
               </div>
 
-              {/* Part A: Basic IPO Check */}
-              <div className="mt-4">
-                <div className="flex items-baseline justify-between gap-2">
-                  <h3 className="font-display text-xl font-bold text-white sm:text-2xl">
-                    {basicIpoTool.title}
-                  </h3>
-                  <span className="font-mono-tabular text-xs font-bold tracking-wider text-slate-300">
-                    {basicIpoTool.badge}
-                  </span>
-                </div>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-300">
-                  {basicIpoTool.description}
-                </p>
-                <div className="mt-4">
-                  <a
-                    href={basicIpoTool.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-white/[0.14] bg-white/[0.04] px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-white/[0.09] sm:w-auto whitespace-nowrap"
-                  >
-                    <span>{basicIpoTool.buttonText}</span>
-                    <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-                  </a>
-                </div>
-              </div>
+              <h3 className="mt-4 font-display text-[26px] font-bold tracking-[-0.02em] text-[#F5F7FA] sm:text-[32px]">
+                {closingBell.name}
+              </h3>
 
-              {/* Divider */}
-              <div className="my-6 border-t border-white/[0.09]" />
+              <p className="mt-1.5 text-[15px] font-semibold text-[#19D3A2]">
+                {closingBell.tagline}
+              </p>
 
-              {/* Part B: Premium IPO Analysis (Community) */}
-              <div className="border-l-2 border-emerald-500 pl-4">
-                <div className="flex items-baseline justify-between gap-2">
-                  <h4 className="font-display text-lg font-bold text-white sm:text-xl">
-                    {basicIpoTool.premiumTitle}
-                  </h4>
-                  <span className="font-mono-tabular text-xs font-bold tracking-wider text-emerald-400">
-                    {basicIpoTool.premiumBadge}
-                  </span>
-                </div>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-300">
-                  {basicIpoTool.premiumDescription}
-                </p>
-                <div className="mt-4">
-                  <a
-                    href={basicIpoTool.premiumUrl}
-                    onClick={(e) => onPremiumIpoClick(e, 'tools_section_premium_ipo')}
-                    className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-xs font-bold text-slate-950 transition-colors hover:bg-emerald-400 sm:w-auto whitespace-nowrap"
-                  >
-                    <span>{basicIpoTool.premiumButtonText}</span>
-                    <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
-                  </a>
-                </div>
+              <p className="mt-3.5 text-[15px] leading-[1.65] text-[#F5F7FA]/90">
+                {closingBell.description}
+              </p>
+
+              <p className="mt-2.5 text-[14px] leading-[1.6] text-[#8D99A8]">
+                {closingBell.supportingCopy}
+              </p>
+
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleSampleClick}
+                  className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-[12px] bg-[#16E0A5] px-6 py-3 text-[14px] font-bold tracking-tight text-[#070B12] shadow-[0_0_24px_rgba(22,224,165,0.16)] transition-all duration-150 hover:bg-[#19D3A2] hover:shadow-[0_0_30px_rgba(22,224,165,0.26)] active:scale-[0.99] whitespace-nowrap"
+                >
+                  <FileText className="h-4 w-4 shrink-0" />
+                  <span>{closingBell.ctaText}</span>
+                </button>
               </div>
             </div>
-          </article>
 
-          {/* RIGHT COLUMN: EXPANDABLE / ADDABLE CERTIFICATION PRACTICE TOOLS */}
-          <div className="flex flex-col gap-4 lg:col-span-6">
-            {certifications.map((cert) => {
-              const isAvailable = cert.status === 'AVAILABLE';
-              return (
-                <article
-                  key={cert.id}
-                  className="flex flex-col justify-between rounded-2xl border border-white/[0.09] bg-[#0B0F16] p-5 sm:p-6"
-                >
-                  <div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-mono-tabular font-semibold tracking-wider text-slate-400">
-                        {cert.code}
+            {/* Right Column: Realistic Financial Publication / PDF Report Preview (7 Cols) */}
+            <div className="lg:col-span-7">
+              <div
+                onClick={handleSampleClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleSampleClick();
+                  }
+                }}
+                aria-label="Preview The Closing Bell daily market brief document"
+                className="group cursor-pointer overflow-hidden rounded-[14px] border border-[#1B2735] bg-[#070B12] transition-colors hover:border-[#19D3A2]/45"
+              >
+                {/* Top PDF Viewer Bar */}
+                <div className="flex items-center justify-between border-b border-[#1B2735] bg-[#0A1018] px-4 py-2.5 text-[11px]">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-[#19D3A2]" />
+                    <span className="font-mono-tabular font-semibold text-[#F5F7FA]">
+                      The_Closing_Bell_Daily_Brief.pdf
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 font-mono-tabular font-semibold text-[#19D3A2] group-hover:underline">
+                    <Eye className="h-3.5 w-3.5" />
+                    <span>Open Report Preview</span>
+                  </span>
+                </div>
+
+                {/* Publication Page Sheet */}
+                <div className="p-5 sm:p-6">
+                  {/* Publication Masthead */}
+                  <div className="border-b-2 border-[#19D3A2]/40 pb-4">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <span className="font-mono-tabular text-[10px] font-semibold tracking-[0.16em] uppercase text-[#19D3A2]">
+                        FINANCEWITHDEV · END-OF-DAY EDITION
                       </span>
-                      <span
-                        className={`font-mono-tabular text-xs font-bold tracking-wider ${
-                          isAvailable ? 'text-emerald-400' : 'text-slate-400'
-                        }`}
-                      >
-                        {isAvailable
-                          ? cert.comparisonBadge
-                          : cert.status}
+                      <span className="font-mono-tabular text-[10px] text-[#8D99A8]">
+                        EVERY MARKET DAY
                       </span>
                     </div>
-
-                    <h3 className="mt-2 font-display text-base font-bold text-white sm:text-lg">
-                      {cert.title}
-                    </h3>
-
-                    <p className="mt-1.5 text-xs leading-relaxed text-slate-300 sm:text-sm">
-                      {cert.description}
+                    <h4 className="mt-1.5 font-display text-xl font-extrabold tracking-tight text-[#F5F7FA] sm:text-2xl">
+                      THE CLOSING BELL
+                    </h4>
+                    <p className="mt-0.5 text-xs text-[#8D99A8]">
+                      {closingBell.documentSubtitle}
                     </p>
                   </div>
 
-                  {isAvailable && cert.freeUrl && (
-                    <div className="mt-4 flex flex-col gap-3 border-t border-white/[0.07] pt-4 sm:flex-row sm:items-center sm:justify-between">
-                      <span className="font-mono-tabular text-xs font-semibold text-emerald-400">
-                        {cert.comparisonBadge}
-                      </span>
-
-                      <a
-                        href={cert.freeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-[42px] items-center justify-center gap-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-xs font-bold text-emerald-300 transition-colors hover:bg-emerald-500 hover:text-slate-950 whitespace-nowrap"
-                      >
-                        <span>{cert.freeCtaText}</span>
-                        <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-                      </a>
+                  {/* Two-Column Publication Index Layout */}
+                  <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                    <div className="rounded-[10px] border border-[#1B2735] bg-[#0A1018] p-3">
+                      <p className="font-mono-tabular text-[10px] font-bold tracking-wider uppercase text-[#19D3A2]">
+                        01 · BENCHMARK &amp; SESSION
+                      </p>
+                      <p className="mt-1 text-xs font-semibold text-[#F5F7FA]">
+                        Nifty, Sensex &amp; Bank Nifty
+                      </p>
+                      <p className="mt-0.5 text-[11px] leading-relaxed text-[#8D99A8]">
+                        How the market session unfolded &amp; key market takeaways.
+                      </p>
                     </div>
-                  )}
-                </article>
-              );
-            })}
+
+                    <div className="rounded-[10px] border border-[#1B2735] bg-[#0A1018] p-3">
+                      <p className="font-mono-tabular text-[10px] font-bold tracking-wider uppercase text-[#19D3A2]">
+                        02 · INSTITUTIONAL &amp; MACRO
+                      </p>
+                      <p className="mt-1 text-xs font-semibold text-[#F5F7FA]">
+                        FII/DII Flows &amp; Cues
+                      </p>
+                      <p className="mt-0.5 text-[11px] leading-relaxed text-[#8D99A8]">
+                        Institutional cash activity, major India stories &amp; global market cues.
+                      </p>
+                    </div>
+
+                    <div className="rounded-[10px] border border-[#1B2735] bg-[#0A1018] p-3">
+                      <p className="font-mono-tabular text-[10px] font-bold tracking-wider uppercase text-[#19D3A2]">
+                        03 · DERIVATIVES &amp; LEVELS
+                      </p>
+                      <p className="mt-1 text-xs font-semibold text-[#F5F7FA]">
+                        Options Desk &amp; Key Levels
+                      </p>
+                      <p className="mt-0.5 text-[11px] leading-relaxed text-[#8D99A8]">
+                        Support &amp; resistance zones and options desk structure.
+                      </p>
+                    </div>
+
+                    <div className="rounded-[10px] border border-[#1B2735] bg-[#0A1018] p-3">
+                      <p className="font-mono-tabular text-[10px] font-bold tracking-wider uppercase text-[#19D3A2]">
+                        04 · CORPORATE &amp; RADAR
+                      </p>
+                      <p className="mt-1 text-xs font-semibold text-[#F5F7FA]">
+                        Commentary &amp; Key Events
+                      </p>
+                      <p className="mt-0.5 text-[11px] leading-relaxed text-[#8D99A8]">
+                        Management commentary &amp; key developments to watch.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+        </motion.article>
+
+        {/* BELOW: 2-COLUMN GRID FOR [ IPO CHECK ] AND [ NISM SERIES XV ] */}
+        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {/* PRODUCT 2: IPO CHECK */}
+          <motion.article
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.4, delay: 0.05 }}
+            className="card-elevate flex flex-col justify-between rounded-[16px] border border-[#1B2735] bg-[#0D141D] p-6 shadow-[0_14px_34px_rgba(0,0,0,0.28)] sm:p-7"
+          >
+            <div>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-[#1B2735] bg-[#0A1018] text-[#19D3A2]">
+                    <BarChart3 className="h-4 w-4" />
+                  </div>
+                  <span className="font-mono-tabular text-[11px] font-semibold tracking-[0.12em] uppercase text-[#19D3A2]">
+                    {ipoCheck.label}
+                  </span>
+                </div>
+                <span className="font-mono-tabular text-[11px] text-[#8D99A8]">
+                  Live Web Tool
+                </span>
+              </div>
+
+              <h3 className="mt-4 font-display text-[22px] font-bold tracking-[-0.015em] text-[#F5F7FA]">
+                {ipoCheck.name}
+              </h3>
+
+              <p className="mt-1 text-[14px] font-semibold text-[#19D3A2]">
+                {ipoCheck.subtitle}
+              </p>
+
+              <p className="mt-2 text-[15px] leading-[1.6] text-[#8D99A8]">
+                {ipoCheck.description}
+              </p>
+
+              {/* Visual App Mockup of IPO Check */}
+              <div className="mt-5 overflow-hidden rounded-[12px] border border-[#1B2735] bg-[#070B12]">
+                <div className="flex items-center justify-between border-b border-[#1B2735] bg-[#0A1018] px-3.5 py-2 text-[11px]">
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-[#1B2735]" />
+                    <span className="h-2 w-2 rounded-full bg-[#1B2735]" />
+                    <span className="ml-1 font-mono-tabular text-[#8D99A8]">
+                      ipo-check-financewithdev.ai.studio
+                    </span>
+                  </div>
+                  <span className="font-mono-tabular text-[10px] font-semibold text-[#19D3A2]">
+                    ACTIVE
+                  </span>
+                </div>
+
+                <div className="p-4 space-y-2.5 text-xs">
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="rounded-[8px] border border-[#1B2735] bg-[#0A1018] p-2.5">
+                      <p className="font-mono-tabular text-[10px] text-[#8D99A8]">
+                        ANALYSIS VIEW
+                      </p>
+                      <p className="mt-0.5 font-semibold text-[#F5F7FA]">
+                        IPO Key Factors
+                      </p>
+                    </div>
+                    <div className="rounded-[8px] border border-[#1B2735] bg-[#0A1018] p-2.5">
+                      <p className="font-mono-tabular text-[10px] text-[#8D99A8]">
+                        COMPARISON
+                      </p>
+                      <p className="mt-0.5 font-semibold text-[#F5F7FA]">
+                        Side-by-Side Check
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between rounded-[8px] border border-[#19D3A2]/25 bg-[#19D3A2]/[0.06] px-3 py-2">
+                    <span className="text-[11px] font-medium text-[#F5F7FA]">
+                      {ipoCheck.communityNote}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <a
+                href={ipoCheck.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent(SITE_CONFIG.analytics.events.ipoToolClick, {
+                    url: ipoCheck.url,
+                  })
+                }
+                className="inline-flex min-h-[46px] w-full items-center justify-center gap-2 rounded-[12px] border border-[#19D3A2]/40 bg-[#19D3A2]/10 px-5 py-2.5 text-[14px] font-bold text-[#19D3A2] transition-all duration-150 hover:bg-[#16E0A5] hover:text-[#070B12] whitespace-nowrap"
+              >
+                <span>{ipoCheck.ctaText}</span>
+                <ExternalLink className="h-4 w-4 shrink-0" />
+              </a>
+            </div>
+          </motion.article>
+
+          {/* PRODUCT 3: NISM SERIES XV — RESEARCH ANALYST PRACTICE */}
+          <motion.article
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="card-elevate flex flex-col justify-between rounded-[16px] border border-[#1B2735] bg-[#0D141D] p-6 shadow-[0_14px_34px_rgba(0,0,0,0.28)] sm:p-7"
+          >
+            <div>
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-[#1B2735] bg-[#0A1018] text-[#19D3A2]">
+                    <BrainCircuit className="h-4 w-4" />
+                  </div>
+                  <span className="font-mono-tabular text-[11px] font-semibold tracking-[0.12em] uppercase text-[#19D3A2]">
+                    {nismSeriesXv.label}
+                  </span>
+                </div>
+                <span className="font-mono-tabular text-[11px] text-[#8D99A8]">
+                  40 Free MCQs
+                </span>
+              </div>
+
+              <h3 className="mt-4 font-display text-[22px] font-bold tracking-[-0.015em] text-[#F5F7FA]">
+                {nismSeriesXv.name}
+              </h3>
+
+              <p className="mt-1 text-[14px] font-semibold text-[#19D3A2]">
+                {nismSeriesXv.subtitle}
+              </p>
+
+              <p className="mt-2 text-[15px] leading-[1.6] text-[#8D99A8]">
+                {nismSeriesXv.description}
+              </p>
+
+              {/* Visual App Mockup of NISM Series XV Tool */}
+              <div className="mt-5 overflow-hidden rounded-[12px] border border-[#1B2735] bg-[#070B12]">
+                <div className="flex items-center justify-between border-b border-[#1B2735] bg-[#0A1018] px-3.5 py-2 text-[11px]">
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-[#1B2735]" />
+                    <span className="h-2 w-2 rounded-full bg-[#1B2735]" />
+                    <span className="ml-1 font-mono-tabular text-[#8D99A8]">
+                      nismxvresearchanalyst-4m18.vercel.app
+                    </span>
+                  </div>
+                  <span className="font-mono-tabular text-[10px] font-semibold text-[#19D3A2]">
+                    ACTIVE
+                  </span>
+                </div>
+
+                <div className="p-4 space-y-2 text-xs">
+                  <div className="flex items-center justify-between rounded-[8px] border border-[#1B2735] bg-[#0A1018] px-3 py-2">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-[#19D3A2]" />
+                      <span className="font-semibold text-[#F5F7FA]">
+                        NISM Series XV — Research Analyst
+                      </span>
+                    </div>
+                    <span className="font-mono-tabular text-[11px] text-[#19D3A2]">
+                      40 Free MCQs
+                    </span>
+                  </div>
+
+                  {nismSeriesXv.upcomingTools.map((upcoming) => (
+                    <div
+                      key={upcoming.title}
+                      className="flex items-center justify-between rounded-[8px] border border-[#1B2735]/60 bg-[#0A1018]/50 px-3 py-1.5 text-[11px] text-[#8D99A8]"
+                    >
+                      <span>{upcoming.title}</span>
+                      <span className="font-mono-tabular text-[10px] text-[#8D99A8]">
+                        {upcoming.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <a
+                href={nismSeriesXv.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent(SITE_CONFIG.analytics.events.nismTestClick, {
+                    url: nismSeriesXv.url,
+                  })
+                }
+                className="inline-flex min-h-[46px] w-full items-center justify-center gap-2 rounded-[12px] border border-[#19D3A2]/40 bg-[#19D3A2]/10 px-5 py-2.5 text-[14px] font-bold text-[#19D3A2] transition-all duration-150 hover:bg-[#16E0A5] hover:text-[#070B12] whitespace-nowrap"
+              >
+                <span>{nismSeriesXv.ctaText}</span>
+                <ExternalLink className="h-4 w-4 shrink-0" />
+              </a>
+            </div>
+          </motion.article>
         </div>
       </div>
     </section>

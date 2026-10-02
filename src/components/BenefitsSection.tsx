@@ -1,276 +1,88 @@
-import React, { useState } from 'react';
-import { ChevronDown, ExternalLink, ArrowUpRight, Check } from 'lucide-react';
-import { SITE_CONFIG } from '../config/siteConfig';
+import React from 'react';
+import { motion } from 'motion/react';
+import {
+  Newspaper,
+  BarChart3,
+  TrendingUp,
+  BookOpen,
+  BrainCircuit,
+  Users,
+} from 'lucide-react';
+import { SITE_CONFIG, BenefitCardItem } from '../config/siteConfig';
 
-interface BenefitsSectionProps {
-  onPremiumIpoClick: (e: React.MouseEvent<HTMLAnchorElement>, source: string) => void;
-}
+const ICON_MAP: Record<
+  BenefitCardItem['iconName'],
+  React.FC<{ className?: string }>
+> = {
+  newspaper: Newspaper,
+  chart: BarChart3,
+  trending: TrendingUp,
+  book: BookOpen,
+  brain: BrainCircuit,
+  users: Users,
+};
 
-export const BenefitsSection: React.FC<BenefitsSectionProps> = ({
-  onPremiumIpoClick,
-}) => {
-  const {
-    heading,
-    subheading,
-    dailyBriefSpotlight,
-    orderedBenefits,
-    ipoCard,
-  } = SITE_CONFIG.whatIsInside;
-
-  const [expandedNismId, setExpandedNismId] = useState<string>('nism-xv');
-
-  const toggleNismItem = (id: string) => {
-    setExpandedNismId((prev) => (prev === id ? '' : id));
-  };
+export const BenefitsSection: React.FC = () => {
+  const { heading, subheading, cards } = SITE_CONFIG.benefitsSection;
 
   return (
     <section
-      id="what-is-inside"
-      className="scroll-mt-16 border-b border-white/[0.08] py-16 sm:py-24"
+      id="benefits"
+      className="scroll-mt-16 border-b border-[#1B2735] bg-[#070B12] py-16 sm:py-20 lg:py-24"
     >
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
-        {/* Section Heading */}
-        <div className="max-w-2xl">
-          <p className="text-xs font-semibold tracking-wider text-emerald-400">
-            WHAT&apos;S INSIDE THE COMMUNITY?
+      <div className="mx-auto max-w-[1140px] px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.4 }}
+          className="max-w-2xl"
+        >
+          <p className="font-mono-tabular text-[11px] font-semibold tracking-[0.14em] uppercase text-[#19D3A2] sm:text-[12px]">
+            COMMUNITY ECOSYSTEM
           </p>
           <h2
-            className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-4xl"
+            className="mt-2 font-display text-[28px] font-bold leading-[1.15] tracking-[-0.02em] text-[#F5F7FA] sm:text-[34px] lg:text-[36px]"
             style={{ textWrap: 'balance' }}
           >
             {heading}
           </h2>
-          <p className="mt-2.5 text-base leading-relaxed text-slate-300 sm:text-lg">
+          <p className="mt-2.5 text-[15px] leading-[1.65] text-[#8D99A8] sm:text-[16px]">
             {subheading}
           </p>
-        </div>
+        </motion.div>
 
-        {/* MAJOR BENEFIT SPOTLIGHT: 01 — DAILY MARKET BRIEF */}
-        <article
-          id="daily-market-brief"
-          className="mt-10 rounded-2xl border-2 border-emerald-500/45 bg-[#0C141E] p-6 sm:p-8"
-        >
-          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
-            <div className="lg:col-span-6">
-              <div className="flex flex-wrap items-center gap-2 text-xs">
-                <span className="font-mono-tabular font-bold tracking-wider text-emerald-400">
-                  01 — DAILY MARKET BRIEF
-                </span>
-                <span aria-hidden="true" className="text-slate-600">
-                  ·
-                </span>
-                <span className="font-mono-tabular font-bold tracking-wider text-emerald-300">
-                  {dailyBriefSpotlight.badge}
-                </span>
-              </div>
+        {/* 6 Concise Cards */}
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {cards.map((card, idx) => {
+            const IconComponent = ICON_MAP[card.iconName];
 
-              <h3 className="mt-3 font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-                {dailyBriefSpotlight.title}
-              </h3>
-
-              <p className="mt-2 font-display text-base font-semibold text-emerald-400 sm:text-lg">
-                {dailyBriefSpotlight.subtitle}
-              </p>
-
-              <p className="mt-2.5 text-sm leading-relaxed text-slate-200 sm:text-base">
-                {dailyBriefSpotlight.description}
-              </p>
-
-              <p className="mt-3 text-xs leading-relaxed text-slate-400">
-                {dailyBriefSpotlight.orderedSummary}
-              </p>
-            </div>
-
-            <div className="border-t border-white/[0.08] pt-6 lg:col-span-6 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
-              <p className="text-xs font-semibold tracking-wider text-slate-400">
-                WHAT EACH BRIEF COVERS
-              </p>
-              <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {dailyBriefSpotlight.bullets.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-2.5 text-sm font-medium text-white"
-                  >
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </article>
-
-        {/* THE 6 ORDERED COMMUNITY BENEFITS (01 TO 06) */}
-        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {orderedBenefits.map((benefit, idx) => (
-            <article
-              key={benefit.index}
-              className={`flex flex-col justify-between rounded-2xl border p-6 transition-colors duration-150 ${
-                idx === 0
-                  ? 'border-emerald-500/35 bg-[#0D1520]'
-                  : 'border-white/[0.08] bg-[#0B0F16] hover:border-white/[0.16]'
-              }`}
-            >
-              <div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-mono-tabular font-bold tracking-wider text-emerald-400">
-                    {benefit.index}
-                  </span>
-                  <span className="font-mono-tabular text-[11px] font-semibold tracking-wider text-slate-400">
-                    {benefit.badge}
-                  </span>
-                </div>
-
-                <h3 className="mt-3 font-display text-lg font-bold tracking-tight text-white sm:text-xl">
-                  {benefit.title}
-                </h3>
-
-                <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                  {benefit.description}
-                </p>
-              </div>
-
-              <div className="mt-5 border-t border-white/[0.06] pt-3">
-                <a
-                  href={benefit.anchor}
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:text-emerald-300 underline underline-offset-4"
-                >
-                  <span>Explore {benefit.title}</span>
-                  <span>↓</span>
-                </a>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        {/* INTERACTIVE DEEP-DIVE CARDS FOR 02 (IPO RESEARCH) & 05 (CERTIFICATION & PRACTICE TOOLS) */}
-        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* 02 — IPO RESEARCH & DISCUSSION ACTION CARD */}
-          <article className="flex flex-col justify-between rounded-2xl border border-white/[0.09] bg-[#0B1018] p-6 sm:p-7 lg:col-span-6">
-            <div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-mono-tabular font-semibold tracking-wider text-emerald-400">
-                  02 — {ipoCard.category}
-                </span>
-                <span className="text-slate-400">Basic Free vs. Member Premium</span>
-              </div>
-
-              <h3 className="mt-2.5 font-display text-xl font-bold tracking-tight text-white">
-                {ipoCard.title}
-              </h3>
-
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-300">
-                {ipoCard.summary}
-              </p>
-
-              <div className="mt-4 space-y-2.5 border-t border-b border-white/[0.08] py-3.5 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-300">Basic IPO Check</span>
-                  <span className="font-mono-tabular text-slate-400">Free for Everyone</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-white">
-                    Detailed IPO Analysis & Discussions
-                  </span>
-                  <span className="font-mono-tabular font-semibold text-emerald-400">
-                    Community Members
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-              <a
-                href={ipoCard.freeButtonUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/[0.14] bg-white/[0.03] px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-white/[0.08] whitespace-nowrap"
+            return (
+              <motion.article
+                key={card.id}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.35, delay: idx * 0.04 }}
+                className="card-elevate flex flex-col justify-between rounded-[16px] border border-[#1B2735] bg-[#0D141D] p-6 shadow-[0_10px_28px_rgba(0,0,0,0.22)]"
               >
-                <span>{ipoCard.freeButtonText}</span>
-                <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-              </a>
+                <div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-[12px] border border-[#1B2735] bg-[#0A1018] text-[#19D3A2]">
+                    <IconComponent className="h-5 w-5" />
+                  </div>
 
-              <a
-                href={ipoCard.premiumButtonUrl}
-                onClick={(e) => onPremiumIpoClick(e, 'what_is_inside_ipo_card')}
-                className="inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-bold text-slate-950 transition-colors hover:bg-emerald-400 whitespace-nowrap"
-              >
-                <span>{ipoCard.premiumButtonText}</span>
-                <ArrowUpRight className="h-3.5 w-3.5 shrink-0" />
-              </a>
-            </div>
-          </article>
+                  <h3 className="mt-4 font-display text-[18px] font-bold tracking-[-0.01em] text-[#F5F7FA]">
+                    {card.title}
+                  </h3>
 
-          {/* 05 — CERTIFICATION & PRACTICE TOOLS EXPANDABLE PREVIEW */}
-          <article className="flex flex-col justify-between rounded-2xl border border-white/[0.09] bg-[#0B1018] p-6 sm:p-7 lg:col-span-6">
-            <div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-mono-tabular font-semibold tracking-wider text-emerald-400">
-                  05 — CERTIFICATION & PRACTICE TOOLS
-                </span>
-                <span className="text-slate-400">Expandable Suite</span>
-              </div>
-
-              <h3 className="mt-2.5 font-display text-xl font-bold tracking-tight text-white">
-                NISM & Finance Practice Modules
-              </h3>
-
-              <div className="mt-4 divide-y divide-white/[0.08] border-t border-b border-white/[0.08]">
-                {SITE_CONFIG.nismCertifications.map((cert) => {
-                  const isExpanded = expandedNismId === cert.id;
-                  const isAvailable = cert.status === 'AVAILABLE';
-
-                  return (
-                    <div key={cert.id} className="py-2.5">
-                      <button
-                        type="button"
-                        onClick={() => toggleNismItem(cert.id)}
-                        aria-expanded={isExpanded}
-                        className="flex min-h-[38px] w-full items-center justify-between gap-3 text-left"
-                      >
-                        <span className="font-display text-sm font-bold text-white">
-                          {cert.title}
-                        </span>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <span
-                            className={`font-mono-tabular text-[11px] font-semibold ${
-                              isAvailable ? 'text-emerald-400' : 'text-slate-400'
-                            }`}
-                          >
-                            {isAvailable
-                              ? cert.comparisonBadge
-                              : cert.status}
-                          </span>
-                          <ChevronDown
-                            className={`h-4 w-4 text-slate-400 transition-transform duration-150 ${
-                              isExpanded ? 'rotate-180 text-emerald-400' : ''
-                            }`}
-                          />
-                        </div>
-                      </button>
-
-                      {isExpanded && (
-                        <div className="mt-2.5 flex flex-col gap-2.5 border-t border-white/[0.06] pt-2.5 text-xs sm:flex-row sm:items-center sm:justify-between">
-                          <p className="text-slate-300">{cert.description}</p>
-                          {isAvailable && cert.freeUrl && (
-                            <a
-                              href={cert.freeUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex min-h-[38px] shrink-0 items-center justify-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 whitespace-nowrap"
-                            >
-                              <span>{cert.freeCtaText}</span>
-                              <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-                            </a>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </article>
+                  <p className="mt-1.5 text-[15px] leading-[1.6] text-[#8D99A8]">
+                    {card.description}
+                  </p>
+                </div>
+              </motion.article>
+            );
+          })}
         </div>
       </div>
     </section>

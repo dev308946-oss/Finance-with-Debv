@@ -2,39 +2,50 @@
  * ============================================================================
  * FINANCE WITH DEV COMMUNITY — CENTRAL CONFIGURATION
  * ============================================================================
- * Edit the URLs and content below in one place to update links, tool statuses
- * (e.g., changing "COMING SOON" to "AVAILABLE"), pricing, community benefits,
- * and FAQs across the entire website.
+ * Single source of truth for external links, manual payment verification
+ * settings, pricing, real products, community benefits, and FAQ content.
  */
+
+export const PAYMENT_LINK = 'YOUR_PAYMENT_LINK_HERE';
+export const COMMUNITY_PRICE = '₹199';
+export const MEMBERSHIP_DURATION = '1 Month';
+export const ADMIN_EMAIL = 'YOUR_ADMIN_EMAIL_HERE';
 
 export const FREE_NISM_XV_URL = 'https://nismxvresearchanalyst-4m18.vercel.app/';
 export const FREE_IPO_TOOL_URL = 'https://ipo-check-financewithdev.ai.studio';
 export const PREMIUM_IPO_TOOL_URL = 'YOUR_COMMUNITY_IPO_TOOL_LINK';
-export const PAYMENT_URL = 'YOUR_PAYMENT_LINK_HERE';
+export const PAYMENT_URL = PAYMENT_LINK;
 export const COMMUNITY_URL = 'YOUR_COMMUNITY_LINK_HERE';
 export const INSTAGRAM_URL = 'YOUR_INSTAGRAM_LINK_HERE';
 
-export type ToolAvailabilityStatus = 'AVAILABLE' | 'COMING SOON';
+// Optional URL if you host the sample PDF file directly (e.g., '/the-closing-bell-sample.pdf')
+// When set to a PDF URL, "VIEW SAMPLE" can also open/embed the PDF directly.
+export const CLOSING_BELL_SAMPLE_PDF_URL = '';
 
-export interface NismCertificationModule {
+// Optional founder photo URL (leave empty to show the clean monogram placeholder)
+export const FOUNDER_PHOTO_URL = '';
+
+export type MembershipSubmissionStatus =
+  | 'Pending Verification'
+  | 'Payment Verified'
+  | 'Access Sent'
+  | 'Rejected';
+
+export interface BenefitCardItem {
   id: string;
-  code: string;
+  iconName: 'newspaper' | 'chart' | 'trending' | 'book' | 'brain' | 'users';
   title: string;
-  shortName: string;
-  status: ToolAvailabilityStatus;
-  badge: string;
   description: string;
-  comparisonBadge?: string;
-  freeTierLabel?: string;
-  communityTierLabel?: string;
-  freeCtaText?: string;
-  freeUrl?: string;
-  communityUrl?: string;
 }
 
-export interface CommunityMemberStage {
+export interface CommunityMemberCard {
   id: string;
-  index: string;
+  iconName: 'graduation' | 'research' | 'market' | 'career';
+  title: string;
+}
+
+export interface HowItWorksStep {
+  number: string;
   title: string;
   description: string;
 }
@@ -46,50 +57,59 @@ export interface FAQItem {
 }
 
 export const SITE_CONFIG = {
-  // 1. CENTRAL LINKS OBJECT
+  // 1. CENTRAL CONFIGURATION & LINKS
+  membershipConfig: {
+    PAYMENT_LINK,
+    COMMUNITY_PRICE,
+    MEMBERSHIP_DURATION,
+    ADMIN_EMAIL,
+    statuses: [
+      'Pending Verification',
+      'Payment Verified',
+      'Access Sent',
+      'Rejected',
+    ] as MembershipSubmissionStatus[],
+  },
+
   links: {
+    PAYMENT_LINK,
     FREE_NISM_XV_URL,
     FREE_IPO_TOOL_URL,
     PREMIUM_IPO_TOOL_URL,
     PAYMENT_URL,
     COMMUNITY_URL,
     INSTAGRAM_URL,
+    CLOSING_BELL_SAMPLE_PDF_URL,
+    FOUNDER_PHOTO_URL,
   },
 
-  // 2. BRAND & POSITIONING
+  // 2. BRAND
   brand: {
     name: 'Finance With Dev',
     upperName: 'FINANCE WITH DEV',
     communityName: 'Finance With Dev Community',
     coreMessage: 'Learn. Research. Discuss. Grow.',
-    supportingLine:
-      'Daily market briefs, research tools, practical learning resources and a finance-focused community — all in one place.',
-    topicsCovered: [
-      'Daily Market Briefs',
-      'Equity Research',
-      'Stock Markets',
-      'IPOs',
-      'Financial Analysis',
-      'Valuation',
-      'Finance Learning Resources',
-      'Certification & Practice Tools',
-      'Finance Careers',
-    ],
   },
 
-  // 3. PRICING & CTA LABELS
+  // 3. PRICING & CTAs
   pricing: {
-    amount: '₹199',
+    amount: COMMUNITY_PRICE,
+    duration: MEMBERSHIP_DURATION,
     period: 'month',
-    formattedPrice: '₹199 / month',
-    compactPrice: '₹199/month',
-    heroSmallText: 'Affordable. Practical. Community-driven.',
-    primaryCtaText: 'JOIN THE COMMUNITY — ₹199/MONTH',
-    secondaryHeroCtaText: "SEE WHAT'S INSIDE ↓",
-    mobileStickyCtaText: '₹199/month → JOIN COMMUNITY',
-    pricingCardButtonText: 'JOIN THE COMMUNITY',
-    finalCtaButtonText: 'JOIN FINANCE WITH DEV — ₹199/MONTH',
-    navCtaText: 'Join ₹199',
+    formattedPrice: `${COMMUNITY_PRICE} / month`,
+    compactPrice: `${COMMUNITY_PRICE}/month`,
+    heroPrimaryCta: 'JOIN THE COMMUNITY',
+    heroSecondaryCta: 'EXPLORE FREE TOOLS',
+    navCtaText: 'JOIN — ₹199',
+    pricingCardCta: 'JOIN THE COMMUNITY — ₹199/MONTH',
+    finalCtaButton: 'JOIN THE COMMUNITY',
+    mobileStickyCta: '₹199/month   JOIN COMMUNITY',
+    nonRefundableNotePrimary:
+      'Please note: Membership payments are non-refundable once payment has been completed.',
+    nonRefundableNoteSecondary:
+      'By joining, you acknowledge that the membership payment is non-refundable.',
+    finalCtaNonRefundable:
+      'Membership payments are non-refundable once payment has been completed.',
   },
 
   // 4. ANALYTICS EVENTS
@@ -97,6 +117,9 @@ export const SITE_CONFIG = {
     enabled: true,
     events: {
       joinCtaClick: 'cta_join_community_click',
+      payButtonClick: 'checkout_pay_199_click',
+      paymentSubmissionSuccess: 'checkout_payment_proof_submitted',
+      closingBellSampleClick: 'product_closing_bell_sample_click',
       ipoToolClick: 'tool_ipo_click',
       nismTestClick: 'tool_nism_click',
       faqExpand: 'faq_question_expand',
@@ -104,481 +127,259 @@ export const SITE_CONFIG = {
     },
   },
 
-  // 5. HERO SECTION
+  // 5. SECTION 1 — HERO
   hero: {
-    headline: 'Learn Finance. Research Markets. Grow Together.',
-    subheadline:
-      'Daily market briefs, research tools, practical learning resources and a finance-focused community — all in one place.',
+    label: 'FINANCE WITH DEV',
+    headline: 'Your daily finance & market community',
+    supportingText:
+      'Daily market briefs. Research tools. Finance resources. Market discussions.',
+    price: '₹199/month',
+    primaryCta: 'JOIN THE COMMUNITY',
+    secondaryCta: 'EXPLORE FREE TOOLS',
   },
 
-  // 6. DAILY MARKET BRIEF SPOTLIGHT & 01–06 ORDERED COMMUNITY BENEFITS
-  whatIsInside: {
-    heading: 'More than just a group chat.',
-    subheading:
-      'Your membership gives you access to daily market briefs, research tools, learning resources, discussions and a finance-focused community.',
-    dailyBriefSpotlight: {
-      index: '01',
-      title: 'Daily Market Brief',
-      orderedSummary:
-        'A concise daily update covering the important developments across markets.',
-      subtitle: 'Know what matters in the markets, every market day.',
+  // 6. SECTION 2 — WHAT YOU ACTUALLY GET (THREE REAL PRODUCTS)
+  realProductsSection: {
+    heading: 'What You Actually Get',
+    subtitle:
+      'Real tools and resources built for finance learners and market enthusiasts.',
+    tryBeforeYouJoin: {
+      badge: 'TRY BEFORE YOU JOIN',
+      text: 'Explore our free tools before becoming a member.',
+    },
+    closingBell: {
+      name: 'The Closing Bell',
+      upperName: 'THE CLOSING BELL',
+      tagline: 'Daily Market Brief — Every Market Day',
+      documentSubtitle: 'A daily market brief for financewithdev.',
       description:
-        'Get a concise daily brief covering the important market developments, news and events that matter to investors and finance learners.',
-      badge: 'EVERY MARKET DAY',
-      bullets: [
-        'Major market movements',
-        'Important company developments',
-        'Sector updates',
-        'Global & macro developments',
-        'Important financial news',
+        'A concise end-of-day market brief covering the session, FII/DII activity, major India and global developments, options levels and key events to watch.',
+      supportingCopy:
+        'A concise end-of-day market brief covering the developments, market activity and events that matter.',
+      ctaText: 'VIEW SAMPLE',
+      sectionsCovered: [
+        'Nifty, Sensex & Bank Nifty',
+        'How the market session unfolded',
+        'Key market takeaways',
+        'FII/DII flows',
+        'Major India stories',
+        'Global market cues',
+        'Options desk / support & resistance levels',
+        'Management commentary',
         'Key events and developments to watch',
       ],
     },
-    orderedBenefits: [
+    ipoCheck: {
+      name: 'IPO Check',
+      upperName: 'IPO CHECK',
+      label: 'Free Tool',
+      subtitle: 'Basic IPO Analysis & Comparison',
+      description:
+        'Explore IPO information and key factors before making your own decision.',
+      communityNote: 'Premium IPO analysis available inside the community.',
+      ctaText: 'TRY FREE',
+      url: FREE_IPO_TOOL_URL,
+    },
+    nismSeriesXv: {
+      name: 'NISM Series XV — Research Analyst Practice',
+      upperName: 'NISM SERIES XV',
+      label: 'Free Practice',
+      subtitle: 'Research Analyst Practice',
+      description: 'Practice with 40 free MCQs.',
+      ctaText: 'TRY 40 FREE MCQs',
+      url: FREE_NISM_XV_URL,
+      upcomingTools: [
+        {
+          title: 'NISM Series VIII — Equity Derivatives',
+          status: 'Coming Soon',
+        },
+        {
+          title: 'NISM Commodity Derivatives',
+          status: 'Coming Soon',
+        },
+      ],
+    },
+  },
+
+  // 7. SECTION 3 — WHAT'S INCLUDED IN THE COMMUNITY (6 CONCISE CARDS)
+  benefitsSection: {
+    heading: 'More Than Just Tools',
+    subheading:
+      'A practical finance community built around learning, research and staying connected with the markets.',
+    cards: [
       {
-        index: '01',
+        id: 'daily-market-brief',
+        iconName: 'newspaper',
         title: 'Daily Market Brief',
-        description:
-          'A concise daily update covering the important developments across markets.',
-        badge: 'EVERY MARKET DAY',
-        anchor: '#daily-market-brief',
+        description: 'The Closing Bell delivered every market day.',
       },
       {
-        index: '02',
-        title: 'IPO Research & Discussion',
-        description:
-          'Basic IPO checking for everyone, with more detailed IPO analysis available to community members.',
-        badge: 'FREE & PREMIUM',
-        anchor: '#tools',
+        id: 'research-ipo-tools',
+        iconName: 'chart',
+        title: 'Research & IPO Tools',
+        description: 'Tools to help you research markets and IPOs.',
       },
       {
-        index: '03',
+        id: 'market-discussions',
+        iconName: 'trending',
         title: 'Market Discussions',
         description:
-          'Discuss market movements, companies, sectors and important financial developments.',
-        badge: 'ONGOING',
-        anchor: '#discussions',
+          'Discuss companies, sectors, earnings and market developments.',
       },
       {
-        index: '04',
+        id: 'finance-learning',
+        iconName: 'book',
         title: 'Finance Learning',
         description:
-          'Books, movies, articles, assignments and other curated finance resources.',
-        badge: 'CURATED LIBRARY',
-        anchor: '#resources',
+          'Books, articles, assignments and useful finance resources.',
       },
       {
-        index: '05',
-        title: 'Certification & Practice Tools',
+        id: 'certification-practice',
+        iconName: 'brain',
+        title: 'Certification Practice',
         description:
           'NISM practice tools and other finance learning resources.',
-        badge: 'PRACTICE SUITE',
-        anchor: '#tools',
       },
       {
-        index: '06',
-        title: 'Finance-Focused Community',
+        id: 'finance-community',
+        iconName: 'users',
+        title: 'Finance Community',
         description:
-          'Connect with people interested in CFA, equity research, markets, valuation and finance careers.',
-        badge: 'PEER NETWORK',
-        anchor: '#community',
+          'Learn, discuss and share ideas with other people interested in finance.',
       },
-    ],
-    ipoCard: {
-      index: '02',
-      category: 'IPO RESEARCH & DISCUSSION',
-      title: 'IPO Research & Discussion',
-      summary:
-        'Basic IPO checking for everyone, with more detailed IPO analysis available to community members.',
-      description:
-        'Research upcoming IPOs, understand the key factors and discuss them with other members.',
-      freeButtonText: 'TRY FREE IPO CHECK',
-      freeButtonUrl: FREE_IPO_TOOL_URL,
-      premiumButtonText: 'PREMIUM — COMMUNITY ACCESS',
-      premiumButtonUrl: PREMIUM_IPO_TOOL_URL,
-    },
+    ] as BenefitCardItem[],
   },
 
-  // 7. EXPANDABLE / ADDABLE CERTIFICATION & PRACTICE TOOLS
-  // Add more certification objects here or change status from 'COMING SOON' to 'AVAILABLE'.
-  nismCertifications: [
-    {
-      id: 'nism-xv',
-      code: 'TOOL 02',
-      title: 'NISM XV — RESEARCH ANALYST',
-      shortName: 'NISM XV — RESEARCH ANALYST',
-      status: 'AVAILABLE',
-      badge: 'AVAILABLE NOW',
-      comparisonBadge: '40 FREE → 80 COMMUNITY',
-      description: 'Test your Research Analyst knowledge with practice MCQs.',
-      freeTierLabel: '40 FREE',
-      communityTierLabel: '80 COMMUNITY',
-      freeCtaText: 'TRY 40 FREE MCQs',
-      freeUrl: FREE_NISM_XV_URL,
-    },
-    {
-      id: 'nism-viii',
-      code: 'TOOL 03',
-      title: 'NISM VIII — EQUITY DERIVATIVES',
-      shortName: 'NISM VIII — EQUITY DERIVATIVES',
-      status: 'COMING SOON',
-      badge: 'COMING SOON',
-      description:
-        'Practice resources for NISM Series VIII: Equity Derivatives.',
-    },
-    {
-      id: 'nism-commodity',
-      code: 'TOOL 04',
-      title: 'COMMODITY DERIVATIVES',
-      shortName: 'COMMODITY DERIVATIVES',
-      status: 'COMING SOON',
-      badge: 'COMING SOON',
-      description: 'Practice resources for NISM Commodity Derivatives.',
-    },
-  ] as NismCertificationModule[],
-
-  // 8. MARKET DISCUSSIONS SECTION
-  marketDiscussions: {
-    heading: "Talk about what's happening in the markets.",
-    description:
-      'Discuss companies, sectors, market movements, IPOs and financial developments with other finance-focused members.',
-    educationalNote:
-      'All discussions are strictly educational and research-oriented. The community does not provide stock tips, personalized investment advice or guaranteed returns.',
-    cards: [
-      {
-        id: 'market-discussion',
-        index: '01',
-        title: 'Market Discussion',
-        description: 'Discuss market movements and important developments.',
-        topics: 'Macro Trends · Index Movements · Market Sentiment',
-      },
-      {
-        id: 'company-discussion',
-        index: '02',
-        title: 'Company Discussion',
-        description:
-          'Discuss companies, earnings, business models and financial performance.',
-        topics: 'Quarterly Results · Business Models · Balance Sheets',
-      },
-      {
-        id: 'sector-discussion',
-        index: '03',
-        title: 'Sector Discussion',
-        description: 'Discuss sector trends, KPIs and industry developments.',
-        topics: 'Industry Cycles · Operating Metrics · Value Chains',
-      },
-      {
-        id: 'ipo-discussion',
-        index: '04',
-        title: 'IPO Discussion',
-        description:
-          'Discuss upcoming IPOs, important factors, risks and valuation.',
-        topics: 'DRHP Takeaways · Key Risks · Peer Valuation',
-      },
-    ],
-  },
-
-  // 9. LEARNING RESOURCES SECTION
-  learningResources: {
-    heading: 'Curated resources for finance learners.',
-    subheading:
-      'Books, movies, articles, assignments and other curated finance resources.',
-    cards: [
-      {
-        id: 'books',
-        index: '01',
-        title: 'Books',
-        description:
-          'Finance, investing, valuation, markets and career-related book recommendations.',
-      },
-      {
-        id: 'movies',
-        index: '02',
-        title: 'Movies & Documentaries',
-        description:
-          'Finance and business movies/documentaries worth watching.',
-      },
-      {
-        id: 'articles',
-        index: '03',
-        title: 'Articles',
-        description: 'Useful finance, markets and business articles.',
-      },
-      {
-        id: 'research-resources',
-        index: '04',
-        title: 'Research Resources',
-        description:
-          'Useful reports, websites, frameworks and research material.',
-      },
-      {
-        id: 'assignments',
-        index: '05',
-        title: 'Assignments',
-        description: 'Practical finance and equity research assignments.',
-      },
-      {
-        id: 'useful-tools',
-        index: '06',
-        title: 'Useful Tools',
-        description:
-          'Websites and tools that can help members learn and research.',
-      },
-    ],
-  },
-
-  // 10. FINANCE-FOCUSED COMMUNITY SECTION (4 CARDS)
+  // 8. SECTION 4 — WHO YOU'LL FIND INSIDE (4 CATEGORIES)
   communitySection: {
-    kicker: 'FINANCE-FOCUSED COMMUNITY',
-    heading: 'Finance-Focused Community',
-    subtitle: 'Learn with people who are serious about finance.',
-    text: 'The community brings together people at different stages of their finance journey.',
-    memberStages: [
+    heading: 'Built for People Serious About Finance',
+    supportingText:
+      'Learn with people at different stages of their finance journey. Share resources, ask questions and discuss ideas.',
+    cards: [
       {
         id: 'cfa-aspirants',
-        index: '01',
-        title: 'CFA Aspirants',
-        description:
-          'People preparing for CFA and other finance certifications.',
-      },
-      {
-        id: 'cfa-level-1-cleared',
-        index: '02',
-        title: 'CFA Level 1 Cleared',
-        description: 'Members who have completed CFA Level 1.',
+        iconName: 'graduation',
+        title: 'CFA Aspirants & Finance Learners',
       },
       {
         id: 'equity-research-learners',
-        index: '03',
+        iconName: 'research',
         title: 'Equity Research Learners',
-        description:
-          'People interested in financial statements, valuation and company analysis.',
       },
       {
         id: 'market-enthusiasts',
-        index: '04',
+        iconName: 'market',
         title: 'Market Enthusiasts',
-        description: 'People interested in markets, trading and investing.',
-      },
-    ] as CommunityMemberStage[],
-    closingStatement:
-      'Discuss concepts, share resources, ask questions and learn from different perspectives.',
-  },
-
-  // 11. FREE VS COMMUNITY COMPARISON
-  comparison: {
-    heading: "What's free. What's inside the community.",
-    freeTier: {
-      title: 'FREE',
-      priceLabel: '₹0',
-      features: [
-        'Basic IPO Check',
-        '40 NISM XV MCQs',
-        'Selected finance resources',
-        'Public educational content',
-      ],
-    },
-    communityTier: {
-      title: 'COMMUNITY — ₹199/MONTH',
-      badge: 'MEMBERS GET MORE',
-      priceLabel: '₹199 / month',
-      highlightedFeature: 'Daily Market Brief',
-      features: [
-        'Daily Market Brief',
-        'Premium IPO Analysis',
-        '80 NISM XV MCQs',
-        'Future NISM Practice Tools',
-        'IPO Discussions',
-        'Market Discussions',
-        'Company & Sector Discussions',
-        'Finance Assignments',
-        'Curated Books & Movies',
-        'Articles & Research Resources',
-        'Private Community',
-        'CFA Learners & CFA Level 1 Cleared Members',
-      ],
-    },
-  },
-
-  // 12. TOOLS SECTION
-  toolsSection: {
-    heading: 'Tools built for finance learners.',
-    basicIpoTool: {
-      code: 'TOOL 01',
-      title: 'BASIC IPO CHECK',
-      badge: 'FREE',
-      description:
-        'Basic IPO checking for everyone, with more detailed IPO analysis available to community members.',
-      buttonText: 'TRY FREE IPO CHECK',
-      url: FREE_IPO_TOOL_URL,
-      premiumTitle: 'Premium IPO Analysis',
-      premiumBadge: 'COMMUNITY',
-      premiumDescription:
-        'More detailed IPO analysis and member-only functionality.',
-      premiumButtonText: 'COMMUNITY ACCESS',
-      premiumUrl: PREMIUM_IPO_TOOL_URL,
-    },
-  },
-
-  // 13. WHO IS THIS FOR?
-  audienceSection: {
-    heading: 'Who should join?',
-    cards: [
-      {
-        id: 'finance-students',
-        index: '01',
-        title: 'Finance Students',
-        description:
-          'For students who want practical exposure beyond textbooks.',
       },
       {
-        id: 'equity-researchers',
-        index: '02',
-        title: 'Aspiring Equity Researchers',
-        description:
-          'For people interested in company analysis, valuation and research.',
-      },
-      {
-        id: 'market-learners',
-        index: '03',
-        title: 'Market Learners',
-        description:
-          'For people who want to understand markets and discuss them with others.',
-      },
-      {
-        id: 'career-builders',
-        index: '04',
+        id: 'finance-career-builders',
+        iconName: 'career',
         title: 'Finance Career Builders',
-        description:
-          'For people preparing for finance certifications, interviews and careers.',
       },
-    ],
+    ] as CommunityMemberCard[],
   },
 
-  // 14. INSIDE THE COMMUNITY ("What happens inside the community?")
-  whatHappensInside: {
-    heading: 'What happens inside the community?',
-    subheading:
-      'Ongoing market briefs, active discussions, learning material and practice tools.',
-    items: [
+  // 9. SECTION 5 — HOW JOINING WORKS (3 STEPS)
+  howItWorksSection: {
+    heading: 'How It Works',
+    steps: [
       {
-        id: 'every-market-day',
-        kicker: 'EVERY MARKET DAY',
-        title: 'Daily Market Brief',
-        description:
-          'A concise summary of the important developments across markets.',
-        featured: true,
+        number: '01',
+        title: 'JOIN',
+        description: 'Choose the ₹199/month membership.',
       },
       {
-        id: 'when-ipos-in-focus',
-        kicker: 'WHEN IPOs ARE IN FOCUS',
-        title: 'IPO Discussion',
+        number: '02',
+        title: 'SUBMIT YOUR DETAILS',
         description:
-          'Discuss upcoming IPOs and important factors to understand.',
-        featured: false,
+          'Complete the payment and submit your transaction details for verification.',
       },
       {
-        id: 'throughout-the-week',
-        kicker: 'THROUGHOUT THE WEEK',
-        title: 'Market Discussion',
+        number: '03',
+        title: 'GET ACCESS',
         description:
-          'Discuss companies, sectors, markets and financial developments.',
-        featured: false,
+          'Once your payment is verified, your community access details will be shared with you.',
       },
-      {
-        id: 'learning',
-        kicker: 'LEARNING',
-        title: 'Resources & Assignments',
-        description:
-          'Books, articles, movies, research material and practical assignments.',
-        featured: false,
-      },
-      {
-        id: 'practice',
-        kicker: 'PRACTICE',
-        title: 'Finance & NISM Practice',
-        description:
-          'Practice questions and certification-related learning tools.',
-        featured: false,
-      },
-      {
-        id: 'community',
-        kicker: 'COMMUNITY',
-        title: 'Ask. Discuss. Learn.',
-        description:
-          'Interact with other people interested in finance and markets.',
-        featured: false,
-      },
-    ],
+    ] as HowItWorksStep[],
   },
 
-  // 15. PRICING CARD SECTION
+  // 10. SECTION 6 — PRICING
   pricingSection: {
-    heading: 'Finance With Dev Community',
+    heading: 'FINANCE WITH DEV COMMUNITY',
     price: '₹199 / month',
-    ctaText: 'JOIN THE COMMUNITY',
+    supportingLine:
+      'Practical finance resources, market briefs, tools and community access.',
     checklist: [
       'Daily Market Brief',
       'Premium IPO Analysis',
+      'NISM Practice Tools',
       'Market & IPO Discussions',
-      'Finance Resources',
-      'Assignments',
-      'NISM & Finance Practice Tools',
-      'Private Community',
-      'CFA & Finance-Focused Members',
+      'Finance Resources & Assignments',
+      'Private Finance Community',
+    ],
+    ctaText: 'JOIN THE COMMUNITY — ₹199/MONTH',
+  },
+
+  // 11. SECTION 7 — WHO'S BEHIND FINANCE WITH DEV
+  founderSection: {
+    heading: "Who's Behind Finance With Dev?",
+    paragraphs: [
+      "I'm Dev, a finance enthusiast focused on equity research, markets and practical finance education.",
+      'Finance With Dev was created to bring useful market information, research tools, learning resources and finance discussions together in one place.',
     ],
   },
 
-  // 16. FAQ ACCORDION
+  // 12. SECTION 8 — FAQ (6 CONCISE QUESTIONS)
   faqSection: {
-    heading: 'Frequently asked questions',
+    heading: 'Frequently Asked Questions',
     items: [
       {
         id: 'faq-1',
         question: 'What do I get for ₹199/month?',
         answer:
-          'You get access to the Finance With Dev Community, the Daily Market Brief every market day, member-only tools and resources, market and IPO discussions, finance assignments, NISM practice resources and other community benefits.',
+          'Access to the Finance With Dev community, The Closing Bell daily market brief, premium IPO analysis, NISM practice tools, finance resources, assignments and market discussions.',
       },
       {
         id: 'faq-2',
-        question: 'Is the IPO tool included?',
+        question: 'What is The Closing Bell?',
         answer:
-          'The basic IPO check is publicly available. Community members get access to the premium/member-only IPO analysis experience.',
+          'The Closing Bell is a daily end-of-day market brief covering market performance, FII/DII activity, important India and global developments, options levels and key events to watch.',
       },
       {
         id: 'faq-3',
-        question: 'How many NISM XV questions are available?',
+        question: 'Can I try anything before joining?',
         answer:
-          'The public version contains 40 free questions. Community members get access to 80 questions.',
+          'Yes. You can try the IPO Check tool and the 40 free NISM Series XV Research Analyst practice questions.',
       },
       {
         id: 'faq-4',
-        question: 'Will there be other NISM practice tests?',
+        question: 'Is this investment advice?',
         answer:
-          'Yes. More certification-specific practice tools are planned, including NISM Series VIII Equity Derivatives and Commodity Derivatives.',
+          'No. Finance With Dev is intended for finance education, information and discussion. Content should not be treated as personalized investment advice.',
       },
       {
         id: 'faq-5',
-        question: 'Is this an investment advisory service?',
+        question: 'How do I get access after payment?',
         answer:
-          'No. The community is intended for education and discussion. It does not provide personalized investment advice or guarantee investment returns.',
+          'After payment, submit your payment/transaction details. Your payment will be manually verified and community access details will then be shared with you.',
       },
       {
         id: 'faq-6',
-        question: 'Who can join?',
+        question: 'Can I get a refund after joining?',
         answer:
-          'Anyone interested in finance, markets, equity research, trading, investing, certifications or building practical finance knowledge.',
+          'No. Membership payments are non-refundable once payment has been completed. Please review the available information and free tools before joining.',
       },
     ] as FAQItem[],
   },
 
-  // 17. FINAL CTA MESSAGE
+  // 13. SECTION 9 — FINAL CTA
   finalCta: {
-    headline: "Learn what's happening. Understand why it matters.",
+    headline: 'Stay Connected With Finance.',
     subheadline:
-      'Get daily market briefs, research tools, learning resources and a finance-focused community for ₹199/month.',
+      'Market briefs. Research tools. Finance learning. One community.',
     price: '₹199/month',
-    buttonText: 'JOIN FINANCE WITH DEV — ₹199/MONTH',
-    smallLine: 'Start learning. Start researching. Start discussing.',
+    buttonText: 'JOIN THE COMMUNITY',
+    smallText:
+      'Membership payments are non-refundable once payment has been completed.',
   },
 } as const;

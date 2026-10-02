@@ -8,13 +8,9 @@ import { SITE_CONFIG } from './config/siteConfig';
 import { trackEvent } from './utils/analytics';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
-import { BenefitsSection } from './components/BenefitsSection';
-import { ComparisonSection } from './components/ComparisonSection';
-import { InsideCommunitySection } from './components/InsideCommunitySection';
-import { DiscussionsAndResourcesSection } from './components/DiscussionsAndResourcesSection';
-import { ContributorsSection } from './components/ContributorsSection';
 import { ToolsSection } from './components/ToolsSection';
-import { AudienceAndNoteSection } from './components/AudienceAndNoteSection';
+import { BenefitsSection } from './components/BenefitsSection';
+import { ContributorsSection } from './components/ContributorsSection';
 import { PricingSection } from './components/PricingSection';
 import { FaqAndFinalCtaSection } from './components/FaqAndFinalCtaSection';
 import { InteractiveModals, ModalType } from './components/InteractiveModals';
@@ -26,32 +22,17 @@ export default function App() {
     e: React.MouseEvent<HTMLAnchorElement>,
     source: string
   ) => {
+    e.preventDefault();
     trackEvent(SITE_CONFIG.analytics.events.joinCtaClick, {
       source,
       price: SITE_CONFIG.pricing.amount,
       paymentUrl: SITE_CONFIG.links.PAYMENT_URL,
     });
-
-    if (SITE_CONFIG.links.PAYMENT_URL.startsWith('YOUR_')) {
-      e.preventDefault();
-      setActiveModal({ type: 'payment' });
-    }
+    setActiveModal({ type: 'payment' });
   };
 
-  const handlePremiumIpoClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    source: string
-  ) => {
-    trackEvent(SITE_CONFIG.analytics.events.ipoToolClick, {
-      source,
-      tier: 'premium_community',
-      url: SITE_CONFIG.links.PREMIUM_IPO_TOOL_URL,
-    });
-
-    if (SITE_CONFIG.links.PREMIUM_IPO_TOOL_URL.startsWith('YOUR_')) {
-      e.preventDefault();
-      setActiveModal({ type: 'premium_ipo' });
-    }
+  const handleViewClosingBellSample = () => {
+    setActiveModal({ type: 'closing_bell_sample' });
   };
 
   const handleSocialOrCommunityClick = (
@@ -70,50 +51,38 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070A0E] text-[#F8FAFC] selection:bg-emerald-500/30 selection:text-emerald-200">
+    <div className="min-h-screen bg-[#070B12] text-[#F5F7FA] selection:bg-[#19D3A2]/30 selection:text-[#F5F7FA]">
       {/* Top Bar Navigation */}
       <Navbar onPaymentLinkClick={handlePaymentLinkClick} />
 
-      {/* Main Content Flow */}
+      {/* 9-Section Conversion Hierarchy */}
       <main>
-        {/* 1. Hero Section */}
+        {/* 1. HERO */}
         <HeroSection
           onPaymentLinkClick={handlePaymentLinkClick}
-          onPremiumIpoClick={handlePremiumIpoClick}
+          onViewClosingBellSample={handleViewClosingBellSample}
         />
 
-        {/* 2. What's Inside the Community (Daily Market Brief + 01–06 Ordered Benefits) */}
-        <BenefitsSection onPremiumIpoClick={handlePremiumIpoClick} />
+        {/* 2. WHAT YOU ACTUALLY GET — REAL PRODUCTS (The Closing Bell, IPO Check, NISM Series XV) */}
+        <ToolsSection onViewClosingBellSample={handleViewClosingBellSample} />
 
-        {/* 3. Free vs Community Comparison */}
-        <ComparisonSection onPaymentLinkClick={handlePaymentLinkClick} />
+        {/* 3. WHAT'S INCLUDED IN THE COMMUNITY (6 Concise Cards) */}
+        <BenefitsSection />
 
-        {/* 4. What Happens Inside the Community? (Ongoing Activity Feed) */}
-        <InsideCommunitySection />
-
-        {/* 5. Market Discussions & Curated Learning Resources */}
-        <DiscussionsAndResourcesSection />
-
-        {/* 6. Finance-Focused Community (4 Member Stage Cards) */}
+        {/* 4. WHO YOU'LL FIND INSIDE & 5. HOW JOINING WORKS */}
         <ContributorsSection />
 
-        {/* 7. Tools (Basic IPO Check + Expandable NISM Certification Suite) */}
-        <ToolsSection onPremiumIpoClick={handlePremiumIpoClick} />
-
-        {/* 8. Who Should Join? */}
-        <AudienceAndNoteSection />
-
-        {/* 9. Pricing Card */}
+        {/* 6. PRICING & 7. WHO'S BEHIND FINANCE WITH DEV */}
         <PricingSection onPaymentLinkClick={handlePaymentLinkClick} />
 
-        {/* 10. FAQ + Final Message CTA + Sticky Mobile Bottom CTA */}
+        {/* 8. FAQ & 9. FINAL CTA + STICKY MOBILE CTA */}
         <FaqAndFinalCtaSection
           onPaymentLinkClick={handlePaymentLinkClick}
           onSocialOrCommunityClick={handleSocialOrCommunityClick}
         />
       </main>
 
-      {/* Modal Handler for Unconfigured Placeholder Links */}
+      {/* Modals: Manual Payment Checkout & The Closing Bell Sample Preview */}
       <InteractiveModals
         activeModal={activeModal}
         onClose={() => setActiveModal(null)}
