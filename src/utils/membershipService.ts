@@ -157,21 +157,27 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
   let imageBuffer: Buffer | null = null;
   let mimeType = '';
   let fileExt = '';
-  let finalSizeBytes = typeof clientSizeBytes === 'number' ? clientSizeBytes : 0;
+  let finalSizeBytes = typeof clientSizeBytes === 'number' && clientSizeBytes > 0 ? clientSizeBytes : 0;
 
   const directBlobUrl = typeof rawStorageRef === 'string' ? rawStorageRef.trim() : '';
   const rawScreenshotStr = typeof screenshotDataUrl === 'string' ? screenshotDataUrl : '';
 
   if (directBlobUrl && (directBlobUrl.startsWith('https://') || directBlobUrl.startsWith('http://'))) {
-    // Direct client upload path
+    // 6A. Direct client-uploaded Blob storage reference path
     finalScreenshotStorageRef = directBlobUrl;
     mimeType = typeof clientMimeType === 'string' && clientMimeType ? clientMimeType : 'image/png';
-    fileExt = ALLOWED_MIME_TYPES[mimeType] || (directBlobUrl.endsWith('.jpg') || directBlobUrl.endsWith('.jpeg') ? 'jpg' : directBlobUrl.endsWith('.webp') ? 'webp' : 'png');
+    fileExt =
+      ALLOWED_MIME_TYPES[mimeType] ||
+      (directBlobUrl.endsWith('.jpg') || directBlobUrl.endsWith('.jpeg')
+        ? 'jpg'
+        : directBlobUrl.endsWith('.webp')
+        ? 'webp'
+        : 'png');
     if (!finalSizeBytes) {
-      finalSizeBytes = 100 * 1024; // Default estimate if not passed
+      finalSizeBytes = 100 * 1024;
     }
   } else if (rawScreenshotStr && rawScreenshotStr.startsWith('data:')) {
-    // Base64 fallback path
+    // 6B. Base64 fallback path (used when direct client blob upload is unavailable)
     const commaIndex = rawScreenshotStr.indexOf(',');
     if (commaIndex === -1) {
       fieldErrors.screenshot = 'Invalid image data. Please upload a JPG, JPEG, PNG or WEBP image.';
@@ -216,7 +222,11 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
     fieldErrors.screenshot = 'Please upload your payment screenshot.';
   }
 
-  if (Object.keys(fieldErrors).length > 0 || (!finalScreenshotStorageRef && !imageBuffer) || !normalizedPhone) {
+  if (
+    Object.keys(fieldErrors).length > 0 ||
+    (!finalScreenshotStorageRef && !imageBuffer) ||
+    !normalizedPhone
+  ) {
     return {
       statusCode: 400,
       body: {
@@ -251,7 +261,7 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
   const randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase();
   const submissionId = `FWD-${datePart}-${randomSuffix}`;
 
-  // 9. Persist Screenshot (if not already uploaded via client direct upload)
+  // 9. Persist Screenshot ONLY for the base64 fallback path (direct Blob upload already has storageRef)
   if (!finalScreenshotStorageRef && imageBuffer) {
     finalScreenshotStorageRef = await persistScreenshotFile(
       submissionId,
