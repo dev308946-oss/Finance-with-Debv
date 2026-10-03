@@ -42,6 +42,12 @@ async function startServer() {
     await lookupHandler(req as any, res as any);
   });
 
+  // Client direct blob upload token handler
+  app.all('/api/membership/upload', async (req, res) => {
+    const uploadHandler = (await import('./api/membership/upload.ts')).default;
+    await uploadHandler(req as any, res as any);
+  });
+
   // Vite middleware in development, static dist in production
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({

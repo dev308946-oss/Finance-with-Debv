@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { upload as uploadToVercelBlob } from '@vercel/blob/client';
 import {
   X,
   ArrowUpRight,
@@ -204,6 +205,7 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
   const [whatsappNumber, setWhatsappNumber] = useState('');
   const [city, setCity] = useState('');
   const [utr, setUtr] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [screenshotDataUrl, setScreenshotDataUrl] = useState<string | null>(null);
   const [screenshotFileName, setScreenshotFileName] = useState<string>('');
   const [screenshotSizeLabel, setScreenshotSizeLabel] = useState<string>('');
@@ -267,6 +269,8 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
       return;
     }
 
+    setSelectedFile(file);
+
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === 'string') {
@@ -281,6 +285,7 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
   };
 
   const handleRemoveScreenshot = () => {
+    setSelectedFile(null);
     setScreenshotDataUrl(null);
     setScreenshotFileName('');
     setScreenshotSizeLabel('');
@@ -333,14 +338,36 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
     setErrors({});
 
     try {
+      // 1. Direct client-to-Vercel Blob upload (bypasses 4.5MB Serverless Function payload limit)
+      let directBlobUrl = '';
+      if (selectedFile) {
+        try {
+          const cleanName = selectedFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const uniquePath = `screenshots/FWD-${Date.now()}-${cleanName}`;
+          const blobResult = await uploadToVercelBlob(uniquePath, selectedFile, {
+            access: 'public',
+            handleUploadUrl: '/api/membership/upload',
+          });
+          if (blobResult && blobResult.url) {
+            directBlobUrl = blobResult.url;
+          }
+        } catch (uploadErr) {
+          console.warn('Client direct Blob upload fallback to relay:', uploadErr);
+        }
+      }
+
+      // 2. Dispatch lightweight metadata payload (< 1 KB) to serverless endpoint
       const payload = JSON.stringify({
         fullName: fullName.trim(),
         email: email.trim().toLowerCase(),
         whatsappNumber: whatsappNumber.trim(),
         city: city.trim(),
         utr: utr.trim(),
-        screenshotDataUrl,
-        screenshotFileName,
+        screenshotStorageRef: directBlobUrl || undefined,
+        screenshotDataUrl: directBlobUrl ? undefined : screenshotDataUrl,
+        screenshotFileName: selectedFile?.name || screenshotFileName,
+        screenshotMimeType: selectedFile?.type,
+        screenshotSizeBytes: selectedFile?.size,
       });
 
       // Try primary endpoint /api/membership/submit first, and fallback to /api/membership-requests if 404 or HTML

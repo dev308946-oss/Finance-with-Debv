@@ -77,8 +77,11 @@ export interface MembershipSubmissionInput {
   whatsappNumber?: unknown;
   city?: unknown;
   utr?: unknown;
+  screenshotStorageRef?: unknown;
   screenshotDataUrl?: unknown;
   screenshotFileName?: unknown;
+  screenshotMimeType?: unknown;
+  screenshotSizeBytes?: unknown;
 }
 
 export type SubmissionStatus =
@@ -108,8 +111,11 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
     whatsappNumber,
     city,
     utr,
+    screenshotStorageRef: rawStorageRef,
     screenshotDataUrl,
     screenshotFileName,
+    screenshotMimeType: clientMimeType,
+    screenshotSizeBytes: clientSizeBytes,
   } = body ?? {};
 
   const fieldErrors: Record<string, string> = {};
@@ -146,15 +152,26 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
     fieldErrors.utr = 'UTR / transaction ID must be 80 characters or fewer.';
   }
 
-  // 6. Validate Payment Screenshot Header & Actual Binary Magic Bytes
+  // 6. Validate Payment Screenshot (Direct Vercel Blob URL or base64 fallback)
+  let finalScreenshotStorageRef = '';
   let imageBuffer: Buffer | null = null;
   let mimeType = '';
   let fileExt = '';
+  let finalSizeBytes = typeof clientSizeBytes === 'number' ? clientSizeBytes : 0;
+
+  const directBlobUrl = typeof rawStorageRef === 'string' ? rawStorageRef.trim() : '';
   const rawScreenshotStr = typeof screenshotDataUrl === 'string' ? screenshotDataUrl : '';
 
-  if (!rawScreenshotStr || !rawScreenshotStr.startsWith('data:')) {
-    fieldErrors.screenshot = 'Please upload your payment screenshot.';
-  } else {
+  if (directBlobUrl && (directBlobUrl.startsWith('https://') || directBlobUrl.startsWith('http://'))) {
+    // Direct client upload path
+    finalScreenshotStorageRef = directBlobUrl;
+    mimeType = typeof clientMimeType === 'string' && clientMimeType ? clientMimeType : 'image/png';
+    fileExt = ALLOWED_MIME_TYPES[mimeType] || (directBlobUrl.endsWith('.jpg') || directBlobUrl.endsWith('.jpeg') ? 'jpg' : directBlobUrl.endsWith('.webp') ? 'webp' : 'png');
+    if (!finalSizeBytes) {
+      finalSizeBytes = 100 * 1024; // Default estimate if not passed
+    }
+  } else if (rawScreenshotStr && rawScreenshotStr.startsWith('data:')) {
+    // Base64 fallback path
     const commaIndex = rawScreenshotStr.indexOf(',');
     if (commaIndex === -1) {
       fieldErrors.screenshot = 'Invalid image data. Please upload a JPG, JPEG, PNG or WEBP image.';
@@ -186,6 +203,7 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
               } else {
                 mimeType = magicCheck.detectedMime;
                 fileExt = magicCheck.ext;
+                finalSizeBytes = imageBuffer.byteLength;
               }
             }
           } catch {
@@ -194,9 +212,11 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
         }
       }
     }
+  } else {
+    fieldErrors.screenshot = 'Please upload your payment screenshot.';
   }
 
-  if (Object.keys(fieldErrors).length > 0 || !imageBuffer || !normalizedPhone) {
+  if (Object.keys(fieldErrors).length > 0 || (!finalScreenshotStorageRef && !imageBuffer) || !normalizedPhone) {
     return {
       statusCode: 400,
       body: {
@@ -212,7 +232,6 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
   // 7. Duplicate check against persistent database (Same UTR & email recently submitted)
   const recentDuplicate = await findRecentSubmissionByUtrAndEmail(cleanUtr, cleanEmail);
   if (recentDuplicate) {
-    // Return existing submission confirmation without re-sending duplicate emails or leaking data
     return {
       statusCode: 200,
       body: {
@@ -232,13 +251,15 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
   const randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase();
   const submissionId = `FWD-${datePart}-${randomSuffix}`;
 
-  // 9. Persist Screenshot to Object/Blob Storage (Vercel Blob / S3)
-  const screenshotStorageRef = await persistScreenshotFile(
-    submissionId,
-    fileExt,
-    imageBuffer,
-    mimeType
-  );
+  // 9. Persist Screenshot (if not already uploaded via client direct upload)
+  if (!finalScreenshotStorageRef && imageBuffer) {
+    finalScreenshotStorageRef = await persistScreenshotFile(
+      submissionId,
+      fileExt,
+      imageBuffer,
+      mimeType
+    );
+  }
 
   // 10. Persist Record to Database
   const newRecord: PersistentSubmissionRecord = {
@@ -250,13 +271,13 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
     utr: cleanUtr,
     status: 'Pending Verification',
     submittedAt: now.toISOString(),
-    screenshotStorageRef,
+    screenshotStorageRef: finalScreenshotStorageRef,
     screenshotOriginalName:
-      typeof screenshotFileName === 'string'
+      typeof screenshotFileName === 'string' && screenshotFileName
         ? screenshotFileName.slice(0, 120)
-        : `${submissionId}.${fileExt}`,
-    screenshotMimeType: mimeType,
-    screenshotSizeBytes: imageBuffer.byteLength,
+        : `${submissionId}.${fileExt || 'png'}`,
+    screenshotMimeType: mimeType || 'image/png',
+    screenshotSizeBytes: finalSizeBytes,
   };
 
   await savePersistentSubmission(newRecord);
