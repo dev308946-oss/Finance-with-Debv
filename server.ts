@@ -38,7 +38,7 @@ async function startServer() {
 
   // Admin lookup and status management route parity for server.ts
   app.all('/api/membership/lookup', async (req, res) => {
-    const lookupHandler = (await import('./api/membership/lookup.ts')).default;
+    const lookupHandler = (await import('./api/membership/lookup')).default;
     await lookupHandler(req as any, res as any);
   });
 

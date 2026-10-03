@@ -2,15 +2,15 @@ import type { IncomingMessage, ServerResponse } from 'http';
 import {
   getSubmissionById,
   retrieveScreenshotBinary,
-} from '../../src/utils/membershipService.ts';
+} from '../../src/utils/membershipService';
 import {
   updatePersistentSubmissionStatus,
   listPersistentSubmissions,
-} from '../../src/utils/persistentStorage.ts';
+} from '../../src/utils/persistentStorage';
 import {
   createAdminSessionToken,
   verifyAdminToken,
-} from '../../src/utils/adminAuth.ts';
+} from '../../src/utils/adminAuth';
 
 export const config = {
   api: {

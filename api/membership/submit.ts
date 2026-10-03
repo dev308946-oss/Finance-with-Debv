@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { processMembershipSubmission } from '../../src/utils/membershipService.ts';
+import { processMembershipSubmission } from '../../src/utils/membershipService';
 
 export const config = {
   api: {

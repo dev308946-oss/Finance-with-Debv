@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import submitHandler, { config as submitConfig } from './membership/submit.ts';
+import submitHandler, { config as submitConfig } from './membership/submit';
 
 export const config = submitConfig;
 

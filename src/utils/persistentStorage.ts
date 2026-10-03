@@ -34,7 +34,7 @@ export function getDatabaseConnectionString(): string | null {
 
 let isTableInitialized = false;
 
-export async function ensureDatabaseSchema(sql?: ReturnType<typeof neon>) {
+export async function ensureDatabaseSchema(sql?: any) {
   if (isTableInitialized) return;
   const dbUrl = getDatabaseConnectionString();
   if (!dbUrl) return;
