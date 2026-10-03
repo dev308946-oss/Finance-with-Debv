@@ -344,10 +344,14 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
         try {
           const cleanName = selectedFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
           const uniquePath = `screenshots/FWD-${Date.now()}-${cleanName}`;
-          const blobResult = await uploadToVercelBlob(uniquePath, selectedFile, {
+          const uploadPromise = uploadToVercelBlob(uniquePath, selectedFile, {
             access: 'public',
             handleUploadUrl: '/api/membership/upload',
           });
+          const timeoutPromise = new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error('Client blob upload timeout')), 8000)
+          );
+          const blobResult = await Promise.race([uploadPromise, timeoutPromise]);
           if (blobResult && blobResult.url) {
             directBlobUrl = blobResult.url;
           }

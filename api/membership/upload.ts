@@ -64,9 +64,6 @@ export default async function handler(
           maximumSizeInBytes: 15 * 1024 * 1024, // Allow up to 15 MB high-resolution screenshots
         };
       },
-      onUploadCompleted: async ({ blob }) => {
-        console.log('[Vercel Blob Client Upload Completed]:', blob.url);
-      },
     });
 
     res.statusCode = 200;
