@@ -118,8 +118,8 @@ async function startServer() {
   // Allow up to 8MB JSON payload to support 5MB base64-encoded image uploads
   app.use(express.json({ limit: '8mb' }));
 
-  // POST /api/membership-requests — Create a new manual verification request
-  app.post('/api/membership-requests', async (req, res) => {
+  // Helper handler for manual verification membership requests
+  const handleMembershipRequest = async (req: express.Request, res: express.Response) => {
     try {
       const {
         fullName,
@@ -197,8 +197,10 @@ async function startServer() {
 
       if (Object.keys(fieldErrors).length > 0 || !imageBuffer || !normalizedPhone) {
         res.status(400).json({
+          success: false,
           ok: false,
           error: 'Please check the highlighted fields and try again.',
+          message: 'Please check the highlighted fields and try again.',
           fieldErrors,
         });
         return;
@@ -257,8 +259,9 @@ async function startServer() {
       // Trigger admin notification
       await sendAdminNotification(newSubmission);
 
-      // Return only confirmation metadata (never expose other submissions)
+      // Return both success flags for maximum compatibility
       res.status(201).json({
+        success: true,
         ok: true,
         submissionId: newSubmission.id,
         submittedAt: newSubmission.submittedAt,
@@ -266,11 +269,17 @@ async function startServer() {
       });
     } catch {
       res.status(500).json({
+        success: false,
         ok: false,
         error: 'Unable to process your submission right now. Please try again.',
+        message: 'Unable to process your submission right now. Please try again.',
       });
     }
-  });
+  };
+
+  // Register both endpoint aliases so any call succeeds
+  app.post('/api/membership-requests', handleMembershipRequest);
+  app.post('/api/membership/submit', handleMembershipRequest);
 
   // Vite middleware in development, static dist in production
   if (process.env.NODE_ENV !== 'production') {

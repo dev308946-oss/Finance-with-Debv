@@ -245,6 +245,10 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isSubmitting) {
+      return;
+    }
+
     if (!validateAllFields()) {
       return;
     }
@@ -253,32 +257,87 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
     setErrors({});
 
     try {
-      const response = await fetch('/api/membership/submit', {
+      const payload = JSON.stringify({
+        fullName: fullName.trim(),
+        email: email.trim().toLowerCase(),
+        whatsappNumber: whatsappNumber.trim(),
+        city: city.trim(),
+        utr: utr.trim(),
+        screenshotDataUrl,
+        screenshotFileName,
+      });
+
+      // Try primary endpoint /api/membership/submit first, and fallback to /api/membership-requests if 404 or HTML
+      let response = await fetch('/api/membership/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        body: JSON.stringify({
-          fullName: fullName.trim(),
-          email: email.trim().toLowerCase(),
-          whatsappNumber: whatsappNumber.trim(),
-          city: city.trim(),
-          utr: utr.trim(),
-          screenshotDataUrl,
-          screenshotFileName,
-        }),
+        body: payload,
       });
 
-      const data = await response.json();
+      let contentType = response.headers.get('content-type') || '';
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Unable to submit payment details.');
+      // If the primary route was not found or returned non-JSON, try fallback endpoint
+      if (response.status === 404 || !contentType.includes('application/json')) {
+        try {
+          const fallbackResponse = await fetch('/api/membership-requests', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: payload,
+          });
+
+          const fallbackContentType = fallbackResponse.headers.get('content-type') || '';
+          if (fallbackContentType.includes('application/json')) {
+            response = fallbackResponse;
+            contentType = fallbackContentType;
+          }
+        } catch {
+          // If fallback fails, continue with original response
+        }
+      }
+
+      let data: any = null;
+
+      if (contentType.includes('application/json')) {
+        try {
+          data = await response.json();
+        } catch {
+          data = null;
+        }
+      } else {
+        // Response is HTML or plain text (e.g. 404 / 502 page from proxy/CDN)
+        const text = await response.text();
+        console.warn('Server returned non-JSON response:', text.slice(0, 200));
+      }
+
+      if (!response.ok) {
+        const errorMsg =
+          (data && (data.error || data.message)) ||
+          `Submission failed (${response.status}). Please check your connection and try again.`;
+        
+        if (data && data.fieldErrors) {
+          setErrors(data.fieldErrors);
+        }
+        throw new Error(errorMsg);
+      }
+
+      const isSuccessful = data && (data.success === true || data.ok === true);
+      if (!isSuccessful || !data.submissionId) {
+        throw new Error(
+          (data && (data.error || data.message)) ||
+          'Submission could not be confirmed. Please try again.'
+        );
       }
 
       setSubmittedRecord({
         submissionId: data.submissionId,
-        submittedAt: data.submittedAt,
-        status: data.status,
+        submittedAt: data.submittedAt || new Date().toISOString(),
+        status: data.status || 'Pending Verification',
       });
 
       trackEvent(SITE_CONFIG.analytics.events.paymentFormSubmit, {
@@ -490,15 +549,15 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
                   id="modal-heading"
                   className="mt-4 font-display text-2xl font-extrabold tracking-tight text-[#0F172A]"
                 >
-                  Payment details received ✓
+                  Payment proof submitted successfully ✓
                 </h2>
 
                 <p className="mt-1.5 text-sm font-semibold text-[#059669]">
-                  Thank you for joining Finance With Dev Community.
+                  Your membership is pending verification.
                 </p>
 
                 <p className="mt-2 text-sm leading-relaxed text-[#475569]">
-                  Your payment details have been submitted for verification.
+                  Thank you for joining Finance With Dev Community. Your payment details and proof have been securely received.
                 </p>
 
                 <p className="mt-2 text-sm font-semibold leading-relaxed text-[#0F172A]">
