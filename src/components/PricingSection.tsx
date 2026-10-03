@@ -224,19 +224,19 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.4 }}
-            className="flex flex-col items-start gap-6 rounded-[12px] border border-[#CBD5E1] bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:gap-8 sm:p-7"
+            className="flex flex-col items-start gap-5 rounded-[12px] border border-[#CBD5E1] bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:gap-8 sm:p-7"
           >
             {links.FOUNDER_PHOTO_URL ? (
               <img
                 src={links.FOUNDER_PHOTO_URL}
                 alt="Dev — Finance With Dev"
                 referrerPolicy="no-referrer"
-                className="h-20 w-20 shrink-0 rounded-[10px] border border-[#CBD5E1] object-cover sm:h-22 sm:w-22"
+                className="relative block h-20 w-20 shrink-0 rounded-[10px] border border-[#CBD5E1] object-cover sm:h-22 sm:w-22"
               />
             ) : (
               <div
                 aria-hidden="true"
-                className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-[10px] border border-[#CBD5E1] bg-[#F1F5F9] font-mono-tabular sm:h-22 sm:w-22"
+                className="relative flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-[10px] border border-[#CBD5E1] bg-[#F1F5F9] font-mono-tabular sm:h-22 sm:w-22"
               >
                 <span className="text-base font-extrabold tracking-wider text-[#0F172A]">
                   DEV
@@ -247,7 +247,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
               </div>
             )}
 
-            <div>
+            <div className="w-full min-w-0">
               <p className="font-mono-tabular text-[11px] font-bold tracking-[0.14em] uppercase text-[#059669]">
                 ABOUT
               </p>

@@ -132,15 +132,15 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
                 className="group cursor-pointer overflow-hidden rounded-[10px] border border-[#CBD5E1] bg-white transition-all hover:border-[#94A3B8] shadow-sm"
               >
                 {/* Top PDF Viewer Bar */}
-                <div className="flex items-center justify-between border-b border-[#E2E8F0] bg-[#F1F5F9] px-4 py-2.5 text-[11px]">
-                  <div className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-[#059669]" />
-                    <span className="font-mono-tabular font-semibold text-[#0F172A]">
+                <div className="flex flex-col gap-2 border-b border-[#E2E8F0] bg-[#F1F5F9] px-3.5 py-2.5 text-[11px] sm:flex-row sm:items-center sm:justify-between sm:px-4">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="h-2 w-2 shrink-0 rounded-full bg-[#059669]" />
+                    <span className="font-mono-tabular font-semibold text-[#0F172A] break-all sm:break-normal">
                       The_Closing_Bell_Daily_Brief.pdf
                     </span>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 font-mono-tabular font-bold text-[#0F172A] group-hover:underline">
-                    <Eye className="h-3.5 w-3.5" />
+                  <span className="inline-flex shrink-0 items-center gap-1.5 font-mono-tabular font-bold text-[#0F172A] group-hover:underline">
+                    <Eye className="h-3.5 w-3.5 shrink-0" />
                     <span>Open Report Preview</span>
                   </span>
                 </div>
