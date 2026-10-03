@@ -51,7 +51,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070B12] text-[#F5F7FA] selection:bg-[#19D3A2]/30 selection:text-[#F5F7FA]">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] selection:bg-[#0F172A] selection:text-white">
       {/* Top Bar Navigation */}
       <Navbar onPaymentLinkClick={handlePaymentLinkClick} />
 

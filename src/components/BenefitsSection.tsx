@@ -28,7 +28,7 @@ export const BenefitsSection: React.FC = () => {
   return (
     <section
       id="benefits"
-      className="scroll-mt-16 border-b border-[#1B2735] bg-[#070B12] py-16 sm:py-20 lg:py-24"
+      className="scroll-mt-16 border-b border-[#E2E8F0] bg-[#F8FAFC] py-14 sm:py-18 lg:py-20"
     >
       <div className="mx-auto max-w-[1140px] px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -39,22 +39,22 @@ export const BenefitsSection: React.FC = () => {
           transition={{ duration: 0.4 }}
           className="max-w-2xl"
         >
-          <p className="font-mono-tabular text-[11px] font-semibold tracking-[0.14em] uppercase text-[#19D3A2] sm:text-[12px]">
+          <p className="font-mono-tabular text-[11px] font-bold tracking-[0.14em] uppercase text-[#059669] sm:text-[12px]">
             COMMUNITY ECOSYSTEM
           </p>
           <h2
-            className="mt-2 font-display text-[28px] font-bold leading-[1.15] tracking-[-0.02em] text-[#F5F7FA] sm:text-[34px] lg:text-[36px]"
+            className="mt-1.5 font-display text-[26px] font-bold leading-[1.18] tracking-[-0.02em] text-[#0F172A] sm:text-[32px]"
             style={{ textWrap: 'balance' }}
           >
             {heading}
           </h2>
-          <p className="mt-2.5 text-[15px] leading-[1.65] text-[#8D99A8] sm:text-[16px]">
+          <p className="mt-2 text-[15px] leading-[1.6] text-[#475569] sm:text-[16px]">
             {subheading}
           </p>
         </motion.div>
 
         {/* 6 Concise Cards */}
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((card, idx) => {
             const IconComponent = ICON_MAP[card.iconName];
 
@@ -65,18 +65,18 @@ export const BenefitsSection: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.35, delay: idx * 0.04 }}
-                className="card-elevate flex flex-col justify-between rounded-[16px] border border-[#1B2735] bg-[#0D141D] p-6 shadow-[0_10px_28px_rgba(0,0,0,0.22)]"
+                className="card-elevate flex flex-col justify-between rounded-[10px] border border-[#E2E8F0] bg-white p-5 shadow-sm sm:p-6"
               >
                 <div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-[12px] border border-[#1B2735] bg-[#0A1018] text-[#19D3A2]">
-                    <IconComponent className="h-5 w-5" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-[8px] border border-[#E2E8F0] bg-[#F8FAFC] text-[#0F172A]">
+                    <IconComponent className="h-4 w-4" />
                   </div>
 
-                  <h3 className="mt-4 font-display text-[18px] font-bold tracking-[-0.01em] text-[#F5F7FA]">
+                  <h3 className="mt-3.5 font-display text-[16px] font-bold tracking-[-0.01em] text-[#0F172A]">
                     {card.title}
                   </h3>
 
-                  <p className="mt-1.5 text-[15px] leading-[1.6] text-[#8D99A8]">
+                  <p className="mt-1.5 text-[13px] leading-[1.6] text-[#475569]">
                     {card.description}
                   </p>
                 </div>
