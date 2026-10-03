@@ -221,8 +221,31 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
           </div>
         </motion.article>
 
-        {/* BELOW: GRID FOR [ IPO CHECK ], [ NISM SERIES XV ], AND [ NISM SERIES VIII ] */}
-        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+        {/* DEDICATED FREE TOOLS SECTION WITH CLEAR HEADING */}
+        <div id="free-tools" className="mt-16 scroll-mt-24 pt-6 border-t border-[#1B2735]">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.4 }}
+            className="max-w-2xl"
+          >
+            <p className="font-mono-tabular text-[11px] font-semibold tracking-[0.14em] uppercase text-[#19D3A2] sm:text-[12px]">
+              FREE TOOLS &amp; PRACTICE
+            </p>
+            <h3
+              className="mt-2 font-display text-[26px] font-bold leading-[1.18] tracking-[-0.02em] text-[#F5F7FA] sm:text-[30px]"
+              style={{ textWrap: 'balance' }}
+            >
+              TRY BEFORE YOU JOIN
+            </h3>
+            <p className="mt-2 text-[15px] leading-[1.65] text-[#8D99A8] sm:text-[16px]">
+              Explore our finance tools and practice resources before becoming a member.
+            </p>
+          </motion.div>
+
+          {/* GRID FOR [ IPO CHECK ], [ NISM SERIES XV ], AND [ NISM SERIES VIII ] */}
+          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
           {/* PRODUCT 2: IPO CHECK */}
           <motion.article
             initial={{ opacity: 0, y: 14 }}
@@ -501,6 +524,7 @@ export const ToolsSection: React.FC<ToolsSectionProps> = ({
               </a>
             </div>
           </motion.article>
+          </div>
         </div>
       </div>
     </section>

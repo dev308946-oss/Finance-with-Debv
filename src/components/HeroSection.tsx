@@ -70,7 +70,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </a>
 
               <a
-                href="#real-products"
+                href="#free-tools"
                 className="inline-flex min-h-[48px] items-center justify-center rounded-[14px] border border-[#1B2735] bg-[#0D141D] px-5 py-3 text-[14px] font-semibold text-[#F5F7FA] transition-colors duration-150 hover:border-[#2A3C52] hover:bg-[#111A26] whitespace-nowrap"
               >
                 {hero.secondaryCta}
