@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SITE_CONFIG } from './config/siteConfig';
 import { trackEvent } from './utils/analytics';
 import { Navbar } from './components/Navbar';
@@ -14,9 +14,26 @@ import { ContributorsSection } from './components/ContributorsSection';
 import { PricingSection } from './components/PricingSection';
 import { FaqAndFinalCtaSection } from './components/FaqAndFinalCtaSection';
 import { InteractiveModals, ModalType } from './components/InteractiveModals';
+import { AdminVerificationPage } from './components/AdminVerificationPage';
 
 export default function App() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [isAdminRoute, setIsAdminRoute] = useState<boolean>(() => {
+    return typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+  });
+
+  useEffect(() => {
+    const checkRoute = () => {
+      setIsAdminRoute(window.location.pathname.startsWith('/admin'));
+    };
+    window.addEventListener('popstate', checkRoute);
+    return () => window.removeEventListener('popstate', checkRoute);
+  }, []);
+
+  // Protected Admin Verification Dashboard Route
+  if (isAdminRoute) {
+    return <AdminVerificationPage />;
+  }
 
   const handlePaymentLinkClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
