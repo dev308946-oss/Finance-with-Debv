@@ -227,6 +227,7 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
     (!finalScreenshotStorageRef && !imageBuffer) ||
     !normalizedPhone
   ) {
+    console.log('[SUBMIT_SERVICE] Validation failed with errors:', Object.keys(fieldErrors));
     return {
       statusCode: 400,
       body: {
@@ -239,8 +240,11 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
     };
   }
 
+  console.log('[SUBMIT_SERVICE] Validation complete. Checking for duplicates...');
+
   // 7. Duplicate check against persistent database (Same UTR & email recently submitted)
   const recentDuplicate = await findRecentSubmissionByUtrAndEmail(cleanUtr, cleanEmail);
+  console.log('[SUBMIT_SERVICE] Duplicate check complete - Found existing?:', !!recentDuplicate);
   if (recentDuplicate) {
     return {
       statusCode: 200,
@@ -263,6 +267,7 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
 
   // 9. Persist Screenshot ONLY for the base64 fallback path (direct Blob upload already has storageRef)
   if (!finalScreenshotStorageRef && imageBuffer) {
+    console.log('[SUBMIT_SERVICE] Base64 fallback path active - persisting screenshot via Blob storage function...');
     finalScreenshotStorageRef = await persistScreenshotFile(
       submissionId,
       fileExt,
@@ -290,9 +295,12 @@ export async function processMembershipSubmission(body: MembershipSubmissionInpu
     screenshotSizeBytes: finalSizeBytes,
   };
 
+  console.log('[SUBMIT_SERVICE] Before Neon INSERT for submission ID:', submissionId);
   await savePersistentSubmission(newRecord);
+  console.log('[SUBMIT_SERVICE] After Neon INSERT completed successfully for submission ID:', submissionId);
 
   // 11. Return strictly minimal public confirmation response (no PII or raw binaries)
+  console.log('[SUBMIT_SERVICE] Immediately before sending HTTP 201 response for submission ID:', submissionId);
   return {
     statusCode: 201,
     body: {

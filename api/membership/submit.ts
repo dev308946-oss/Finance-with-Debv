@@ -10,6 +10,8 @@ export const config = {
 };
 
 export default async function handler(req: IncomingMessage & { body?: any }, res: ServerResponse & { status?: any; json?: any }) {
+  console.log('[SUBMIT_API] Handler start - Method:', req.method);
+
   // Enable CORS headers for safety
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -30,7 +32,7 @@ export default async function handler(req: IncomingMessage & { body?: any }, res
 
   try {
     let body = req.body;
-    if (!body) {
+    if (!body || typeof body !== 'object') {
       const chunks: Buffer[] = [];
       for await (const chunk of req) {
         chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
@@ -43,12 +45,17 @@ export default async function handler(req: IncomingMessage & { body?: any }, res
       }
     }
 
+    console.log('[SUBMIT_API] Request body parsed successfully - keys:', Object.keys(body || {}));
+
     const result = await processMembershipSubmission(body);
 
+    console.log('[SUBMIT_API] Response about to be sent - Status:', result.statusCode, 'Body:', JSON.stringify(result.body));
     res.statusCode = result.statusCode;
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(result.body));
+    console.log('[SUBMIT_API] Handler completed successfully');
   } catch (error) {
+    console.error('[SUBMIT_API] Caught exception with stack trace:', error instanceof Error ? error.stack : error);
     res.statusCode = 500;
     res.setHeader('Content-Type', 'application/json');
     res.end(

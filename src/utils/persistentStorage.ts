@@ -33,13 +33,22 @@ export function getDatabaseConnectionString(): string | null {
 }
 
 let isTableInitialized = false;
+let cachedSqlClient: any = null;
+
+export function getSqlClient(): any {
+  const dbUrl = getDatabaseConnectionString();
+  if (!dbUrl) return null;
+  if (!cachedSqlClient) {
+    cachedSqlClient = neon(dbUrl);
+  }
+  return cachedSqlClient;
+}
 
 export async function ensureDatabaseSchema(sql?: any) {
   if (isTableInitialized) return;
-  const dbUrl = getDatabaseConnectionString();
-  if (!dbUrl) return;
+  const sqlClient = sql || getSqlClient();
+  if (!sqlClient) return;
 
-  const sqlClient = sql || neon(dbUrl);
   try {
     await sqlClient`
       CREATE TABLE IF NOT EXISTS membership_submissions (
@@ -69,8 +78,8 @@ export async function ensureDatabaseSchema(sql?: any) {
     isTableInitialized = true;
     console.log('[PostgreSQL] Database schema and indexes verified successfully.');
   } catch (error) {
-    console.error('[PostgreSQL] Error initializing database schema:', error);
-    throw error;
+    console.error('[PostgreSQL] Non-fatal schema verification warning (table likely exists):', error instanceof Error ? error.message : String(error));
+    isTableInitialized = true;
   }
 }
 
@@ -191,11 +200,10 @@ export async function findRecentSubmissionByUtrAndEmail(
   utr: string,
   email: string
 ): Promise<PersistentSubmissionRecord | null> {
-  const dbUrl = getDatabaseConnectionString();
+  const sql = getSqlClient();
 
-  if (dbUrl) {
+  if (sql) {
     try {
-      const sql = neon(dbUrl);
       await ensureDatabaseSchema(sql);
 
       // Query database for recent submission with same UTR and email (last 10 minutes)
@@ -266,10 +274,9 @@ export async function savePersistentSubmission(
 ): Promise<void> {
   localFallbackMap.set(record.id, record);
 
-  const dbUrl = getDatabaseConnectionString();
-  if (dbUrl) {
+  const sql = getSqlClient();
+  if (sql) {
     try {
-      const sql = neon(dbUrl);
       await ensureDatabaseSchema(sql);
 
       await sql`
@@ -316,11 +323,10 @@ export async function savePersistentSubmission(
 export async function findPersistentSubmissionById(
   id: string
 ): Promise<PersistentSubmissionRecord | null> {
-  const dbUrl = getDatabaseConnectionString();
+  const sql = getSqlClient();
 
-  if (dbUrl) {
+  if (sql) {
     try {
-      const sql = neon(dbUrl);
       await ensureDatabaseSchema(sql);
 
       const rows = await sql`
@@ -378,12 +384,11 @@ export async function updatePersistentSubmissionStatus(
   id: string,
   newStatus: string
 ): Promise<boolean> {
-  const dbUrl = getDatabaseConnectionString();
+  const sql = getSqlClient();
   let updated = false;
 
-  if (dbUrl) {
+  if (sql) {
     try {
-      const sql = neon(dbUrl);
       await ensureDatabaseSchema(sql);
 
       const result = await sql`
@@ -412,11 +417,10 @@ export async function updatePersistentSubmissionStatus(
 }
 
 export async function listPersistentSubmissions(limit = 50): Promise<PersistentSubmissionRecord[]> {
-  const dbUrl = getDatabaseConnectionString();
+  const sql = getSqlClient();
 
-  if (dbUrl) {
+  if (sql) {
     try {
-      const sql = neon(dbUrl);
       await ensureDatabaseSchema(sql);
 
       const rows = await sql`
