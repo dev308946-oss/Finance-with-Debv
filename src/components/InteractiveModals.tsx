@@ -60,6 +60,82 @@ function isValidIndianPhone(phone: string): boolean {
   return /^(?:\+91|91|0)?[6-9]\d{9}$/.test(cleaned);
 }
 
+function normalizeErrorMessage(err: unknown): string {
+  if (!err) {
+    return 'An unexpected error occurred. Please try again.';
+  }
+
+  // 1. String primitive
+  if (typeof err === 'string') {
+    return err.trim() || 'An unexpected error occurred. Please try again.';
+  }
+
+  // 2. Standard Error instance
+  if (err instanceof Error) {
+    return err.message || 'An error occurred. Please try again.';
+  }
+
+  // 3. Array of errors or strings
+  if (Array.isArray(err)) {
+    const list = err.map(normalizeErrorMessage).filter(Boolean);
+    return list.length > 0 ? list.join(' · ') : 'An unexpected error occurred.';
+  }
+
+  // 4. Object structures
+  if (typeof err === 'object') {
+    const obj = err as Record<string, any>;
+
+    // Case: { message: "..." }
+    if (obj.message && typeof obj.message === 'string') {
+      return obj.message;
+    }
+
+    // Case: { error: "..." or error: { ... } }
+    if (obj.error) {
+      if (typeof obj.error === 'string') {
+        return obj.error;
+      }
+      return normalizeErrorMessage(obj.error);
+    }
+
+    // Case: { errors: { field: "..." } or errors: [...] }
+    if (obj.errors) {
+      if (typeof obj.errors === 'string') {
+        return obj.errors;
+      }
+      if (Array.isArray(obj.errors)) {
+        return obj.errors.map(normalizeErrorMessage).filter(Boolean).join(' · ');
+      }
+      if (typeof obj.errors === 'object') {
+        const fieldMsgs = Object.values(obj.errors).map(normalizeErrorMessage).filter(Boolean);
+        if (fieldMsgs.length > 0) {
+          return fieldMsgs.join(' · ');
+        }
+      }
+    }
+
+    // Case: { fieldErrors: { ... } }
+    if (obj.fieldErrors && typeof obj.fieldErrors === 'object') {
+      const fieldMsgs = Object.values(obj.fieldErrors).map(normalizeErrorMessage).filter(Boolean);
+      if (fieldMsgs.length > 0) {
+        return fieldMsgs.join(' · ');
+      }
+    }
+
+    // Fallback: serialize safely to string
+    try {
+      const serialized = JSON.stringify(obj);
+      if (serialized && serialized !== '{}') {
+        return serialized;
+      }
+    } catch {
+      // Fall through to default
+    }
+  }
+
+  return 'An unexpected error occurred. Please try again.';
+}
+
 const CLOSING_BELL_PREVIEW_SECTIONS = [
   {
     number: '01',
@@ -316,41 +392,60 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
       }
 
       if (!response.ok) {
-        const errorMsg =
-          (data && (data.error || data.message)) ||
-          `Submission failed (${response.status}). Please check your connection and try again.`;
-        
-        if (data && data.fieldErrors) {
-          setErrors(data.fieldErrors);
+        // Extract human-readable error from server response
+        let readableError = '';
+        if (data) {
+          if (data.message && typeof data.message === 'string') {
+            readableError = data.message;
+          } else if (data.error && typeof data.error === 'string') {
+            readableError = data.error;
+          } else if (data.error || data.message || data.errors || data.fieldErrors) {
+            readableError = normalizeErrorMessage(data.error || data.message || data.errors || data.fieldErrors);
+          }
         }
-        throw new Error(errorMsg);
+
+        if (!readableError) {
+          readableError = `Submission failed (${response.status}). Please check your details and try again.`;
+        }
+
+        // Safely extract field-level errors as strings
+        const nextFieldErrors: FormFieldErrors = { general: readableError };
+        const rawFieldErrors = data?.fieldErrors || data?.errors;
+        if (rawFieldErrors && typeof rawFieldErrors === 'object' && !Array.isArray(rawFieldErrors)) {
+          for (const [key, val] of Object.entries(rawFieldErrors)) {
+            if (val) {
+              (nextFieldErrors as Record<string, string>)[key] = normalizeErrorMessage(val);
+            }
+          }
+        }
+
+        setErrors(nextFieldErrors);
+        throw new Error(readableError);
       }
 
       const isSuccessful = data && (data.success === true || data.ok === true);
       if (!isSuccessful || !data.submissionId) {
-        throw new Error(
-          (data && (data.error || data.message)) ||
-          'Submission could not be confirmed. Please try again.'
-        );
+        const fallbackMsg = data
+          ? normalizeErrorMessage(data.error || data.message || data)
+          : 'Submission could not be confirmed. Please try again.';
+        throw new Error(fallbackMsg);
       }
 
       setSubmittedRecord({
-        submissionId: data.submissionId,
-        submittedAt: data.submittedAt || new Date().toISOString(),
-        status: data.status || 'Pending Verification',
+        submissionId: String(data.submissionId),
+        submittedAt: typeof data.submittedAt === 'string' ? data.submittedAt : new Date().toISOString(),
+        status: typeof data.status === 'string' ? data.status : 'Pending Verification',
       });
 
       trackEvent(SITE_CONFIG.analytics.events.paymentFormSubmit, {
-        submissionId: data.submissionId,
+        submissionId: String(data.submissionId),
         utr: utr.trim(),
       });
     } catch (err) {
+      const normalizedGeneralError = normalizeErrorMessage(err);
       setErrors((prev) => ({
         ...prev,
-        general:
-          err instanceof Error
-            ? err.message
-            : 'Submission failed. Please check your details and try again.',
+        general: normalizedGeneralError,
       }));
     } finally {
       setIsSubmitting(false);
@@ -657,7 +752,7 @@ export const InteractiveModals: React.FC<InteractiveModalsProps> = ({
                 {errors.general && (
                   <div className="mt-3.5 flex items-start gap-2 rounded-[8px] border border-rose-300 bg-rose-50 p-3 text-xs text-rose-800">
                     <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-600" />
-                    <span>{errors.general}</span>
+                    <span>{normalizeErrorMessage(errors.general)}</span>
                   </div>
                 )}
 

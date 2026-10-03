@@ -175,22 +175,34 @@ async function startServer() {
       if (typeof screenshotDataUrl !== 'string' || !screenshotDataUrl.startsWith('data:')) {
         fieldErrors.screenshot = 'Please upload your payment screenshot.';
       } else {
-        const matches = screenshotDataUrl.match(
-          /^data:(image\/(?:jpeg|jpg|png|webp));base64,([A-Za-z0-9+/=]+)$/
-        );
-        if (!matches) {
-          fieldErrors.screenshot =
-            'Unsupported file format. Please upload a JPG, JPEG, PNG or WEBP image.';
+        const commaIndex = screenshotDataUrl.indexOf(',');
+        if (commaIndex === -1) {
+          fieldErrors.screenshot = 'Invalid image data. Please upload a JPG, JPEG, PNG or WEBP image.';
         } else {
-          mimeType = matches[1];
-          fileExt = ALLOWED_MIME_TYPES[mimeType] || 'jpg';
-          imageBuffer = Buffer.from(matches[2], 'base64');
+          const header = screenshotDataUrl.substring(0, commaIndex);
+          const base64Data = screenshotDataUrl.substring(commaIndex + 1).replace(/\s/g, '');
+          const headerMatch = header.match(/^data:([^;]+);base64$/i);
 
-          if (imageBuffer.byteLength === 0) {
-            fieldErrors.screenshot = 'Uploaded screenshot file is empty.';
-          } else if (imageBuffer.byteLength > MAX_FILE_SIZE_BYTES) {
-            fieldErrors.screenshot =
-              'Screenshot exceeds the 5 MB maximum file size limit.';
+          if (!headerMatch) {
+            fieldErrors.screenshot = 'Unsupported file format. Please upload a JPG, JPEG, PNG or WEBP image.';
+          } else {
+            mimeType = headerMatch[1].toLowerCase();
+            fileExt = ALLOWED_MIME_TYPES[mimeType] || '';
+
+            if (!fileExt) {
+              fieldErrors.screenshot = 'Unsupported file format. Please upload a JPG, JPEG, PNG or WEBP image.';
+            } else {
+              try {
+                imageBuffer = Buffer.from(base64Data, 'base64');
+                if (imageBuffer.byteLength === 0) {
+                  fieldErrors.screenshot = 'Uploaded screenshot file is empty.';
+                } else if (imageBuffer.byteLength > MAX_FILE_SIZE_BYTES) {
+                  fieldErrors.screenshot = 'Screenshot exceeds the 5 MB maximum file size limit.';
+                }
+              } catch {
+                fieldErrors.screenshot = 'Could not process screenshot image. Please try again.';
+              }
+            }
           }
         }
       }
@@ -247,6 +259,29 @@ async function startServer() {
         } catch {
           existingSubmissions = [];
         }
+      }
+
+      // Backend duplicate check: If the same UTR and email was submitted recently (within last 5 minutes), return the existing submission
+      const recentDuplicate = existingSubmissions.find((item) => {
+        if (item.utr.toLowerCase() === cleanUtr.toLowerCase() && item.email.toLowerCase() === cleanEmail) {
+          const itemTime = new Date(item.submittedAt).getTime();
+          const timeDiffMs = Math.abs(now.getTime() - itemTime);
+          return timeDiffMs < 5 * 60 * 1000;
+        }
+        return false;
+      });
+
+      if (recentDuplicate) {
+        // Return existing submission gracefully without creating duplicate
+        res.status(200).json({
+          success: true,
+          ok: true,
+          submissionId: recentDuplicate.id,
+          submittedAt: recentDuplicate.submittedAt,
+          status: recentDuplicate.status,
+          isExisting: true,
+        });
+        return;
       }
 
       existingSubmissions.push(newSubmission);
