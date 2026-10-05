@@ -6,7 +6,8 @@
  * settings, pricing, real products, community benefits, and FAQ content.
  */
 
-export const PAYMENT_LINK = 'YOUR_PAYMENT_LINK_HERE';
+export const PAYMENT_LINK = 'https://tally.so/r/eqd6Go';
+export const MEMBERSHIP_FORM_URL = 'https://tally.so/r/eqd6Go';
 export const OFFICIAL_UPI_ID = 'dev.sachdeva@ptyes';
 export const COMMUNITY_PRICE = '₹199';
 export const MEMBERSHIP_DURATION = '1 Month';
@@ -62,6 +63,7 @@ export const SITE_CONFIG = {
   // 1. CENTRAL CONFIGURATION & LINKS
   membershipConfig: {
     PAYMENT_LINK,
+    MEMBERSHIP_FORM_URL,
     OFFICIAL_UPI_ID,
     COMMUNITY_PRICE,
     MEMBERSHIP_DURATION,
@@ -76,6 +78,7 @@ export const SITE_CONFIG = {
 
   links: {
     PAYMENT_LINK,
+    MEMBERSHIP_FORM_URL,
     FREE_NISM_XV_URL,
     FREE_NISM_VIII_URL,
     FREE_IPO_TOOL_URL,
